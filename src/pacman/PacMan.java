@@ -17,6 +17,7 @@ public class PacMan {
         level1 l1 = new level1();
         l1.printMap();
         Graph G = new Graph(l1);
+        System.out.println(G.toString());
     }
     
 }
