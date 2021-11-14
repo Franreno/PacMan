@@ -1,14 +1,15 @@
-package pacman;
+package SystemElements;
 
+import java.util.*;
 
 /**
  *
  * @author franreno
  */
 public class Map {
-    private final int level1Width = 28;
-    private final int level1Height = 31;
-    private final int level1Map[][] = {
+    protected int mapWidth = 28;
+    protected int mapHeight = 31;
+    protected int mapData[][] = {
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
         {4,1,1,1,1,1,1,1,1,1,1,1,1,4,4,1,1,1,1,1,1,1,1,1,1,1,1,4},
         {4,1,4,4,4,4,1,4,4,4,4,4,1,4,4,1,4,4,4,4,4,1,4,4,4,4,1,4},
@@ -42,6 +43,7 @@ public class Map {
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4}
     };
     
+    
     private void printTargetMap(int value) {
         switch(value) {
             //Empty pixel
@@ -68,12 +70,25 @@ public class Map {
     }
     
     public void printMap() {
-        for(int i=0; i<level1Height; i++) {
-            for(int j=0; j<level1Width; j++){
-                printTargetMap(level1Map[i][j]);
+        for(int i=0; i<mapHeight; i++) {
+            for(int j=0; j<mapWidth; j++){
+                printTargetMap(mapData[i][j]);
             }
             System.out.print("\n");
         }
     }
+    
+   public int countAmountOfLegalPlaces() {
+       int count = 0;
+       for(int i=0; i<mapHeight; i++) {
+           for(int j=0; j<mapWidth; j++) {
+               if(mapData[i][j] != 4 && mapData[i][j] != 6) {
+                   count++;
+               }
+           }
+       }
+       
+       return count;
+   }
     
 }
