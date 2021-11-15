@@ -8,11 +8,6 @@ package SystemElements;
  *
  * @author franreno
  */
-public class level1 extends Map {    
-
-    public level1() {
-        super();
-        this.mapWidth = 28;
-        this.mapHeight = 31;
-    }
+public class Ghost {
+    
 }

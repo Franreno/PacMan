@@ -2,8 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package SystemElements;
-import java.util.*;
+package Engine;
+import java.util.ArrayList;
 
 /**
  *
@@ -52,11 +52,11 @@ public class GraphNode {
         return width*i + j;
     }
     
-    private boolean verticalLook(Map e, int i, int j, int whereToLook, int constraint) {
+    private boolean verticalLook(int[][] data, int i, int j, int whereToLook, int constraint) {
         //Como eh olhar vertical deve ser usado o i
         if( i <= constraint && i >= 0 ) {
             // Ver a posicao e checar se eh uma parede ou void
-            if( e.mapData[whereToLook][j] != 4 && e.mapData[whereToLook][j] != 6) {
+            if( data[whereToLook][j] != 4 && data[whereToLook][j] != 6) {
                 return true;
             }
         }
@@ -64,11 +64,11 @@ public class GraphNode {
         return false;
     }
     
-    private boolean horizontalLook(Map e, int i, int j, int whereToLook, int constraint) {
+    private boolean horizontalLook(int[][] data, int i, int j, int whereToLook, int constraint) {
         //Como eh olhar vertical deve ser usado o i
         if( j <= constraint && j > 0) {
             // Ver a posicao e checar se eh uma parede ou void
-            if( e.mapData[i][whereToLook] != 4 && e.mapData[i][whereToLook] != 6) {
+            if( data[i][whereToLook] != 4 && data[i][whereToLook] != 6) {
                 return true;
             }
         }
@@ -77,43 +77,48 @@ public class GraphNode {
     
     public void calculateNeighbors(Map e, int i, int j) {
         this.neighborsAmount = 0;
+        int [][] data = e.getData();
         
         // Olhar para baixo
-        if( verticalLook(e, i, j, (i+1), e.mapHeight-2 ) )
+        if( verticalLook(data, i, j, (i+1), e.getHeight()-2 ) )
             this.neighborsAmount++;
         
         // Olhar para cima
-        if( verticalLook(e, i, j, (i-1), i) )
+        if( verticalLook(data, i, j, (i-1), i) )
             this.neighborsAmount++;
         
         // Olhar para a direita
-        if( horizontalLook(e, i, j, (j+1), e.mapWidth-2 ) )
+        if( horizontalLook(data, i, j, (j+1), e.getWidth()-2 ) )
             this.neighborsAmount++;
         
         // Olhar para a esquerda
-        if( horizontalLook(e, i, j, (j-1), j ) )
+        if( horizontalLook(data, i, j, (j-1), j ) )
             this.neighborsAmount++;
     }
     
     
     public void lookForSurroudings(Map e, int i, int j) {
         
+        int[][] data = e.getData();
+        int width = e.getWidth();
+        int height = e.getHeight();
+        
         // Olhar para baixo
-        if( verticalLook(e, i, j, (i+1), e.mapHeight-2 ) )
-            this.list.add( new GraphNode(calculateNodeID(e.mapWidth, (i+1), j), e.mapData[i+1][j], (i+1), j, e) );
+        if( verticalLook(data, i, j, (i+1), height-2 ) )
+            this.list.add( new GraphNode(calculateNodeID(width, (i+1), j), data[i+1][j], (i+1), j, e) );
         
         // Olhar para cima
-        if( verticalLook(e, i, j, (i-1), i) )
-            this.list.add( new GraphNode(calculateNodeID(e.mapWidth, (i-1), j), e.mapData[i-1][j], (i-1), j, e) );
+        if( verticalLook(data, i, j, (i-1), i) )
+            this.list.add( new GraphNode(calculateNodeID(width, (i-1), j), data[i-1][j], (i-1), j, e) );
         
         // Olhar para a direita
-        if( horizontalLook(e, i, j, (j+1), e.mapWidth-2 ) )
-            this.list.add( new GraphNode(calculateNodeID(e.mapWidth, i, (j+1)), e.mapData[i][j+1], i, (j+1), e) );
+        if( horizontalLook(data, i, j, (j+1), width-2 ) )
+            this.list.add( new GraphNode(calculateNodeID(width, i, (j+1)), data[i][j+1], i, (j+1), e) );
             
         
         // Olhar para a esquerda
-        if( horizontalLook(e, i, j, (j-1), j ) )
-            this.list.add( new GraphNode(calculateNodeID(e.mapWidth, i, (j-1)), e.mapData[i][j-1], i, (j-1), e) );
+        if( horizontalLook(data, i, j, (j-1), j ) )
+            this.list.add( new GraphNode(calculateNodeID(width, i, (j-1)), data[i][j-1], i, (j-1), e) );
         
     }
     

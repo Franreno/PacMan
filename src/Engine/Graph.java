@@ -1,4 +1,4 @@
-package SystemElements;
+package Engine;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,14 +18,15 @@ public class Graph {
         hashList = new HashMap<>();
         numVertices = 0;
         int auxNumVertices = 0;
-        for(int i=0; i<e.mapHeight; i++) {
-            for(int j=0; j<e.mapWidth; j++) {
+        int[][] data = e.getData();
+        for(int i=0; i<e.getHeight(); i++) {
+            for(int j=0; j<e.getWidth(); j++) {
                                 
-                if(e.mapData[i][j] != 4 && e.mapData[i][j] != 6) {
+                if(data[i][j] != 4 && data[i][j] != 6) {
                     
-                    int thisNodeId = (e.mapWidth * i + j);
+                    int thisNodeId = (e.getWidth() * i + j);
                     
-                    GraphNode gn = new GraphNode( thisNodeId, e.mapData[i][j], i, j , e);
+                    GraphNode gn = new GraphNode( thisNodeId, data[i][j], i, j , e);
                     gn.calculateNeighbors(e, i, j);
                     gn.lookForSurroudings(e, i, j);
                     hashList.put(thisNodeId, gn);
