@@ -54,7 +54,7 @@ public class GraphNode {
       
     private boolean verticalLook(int[][] data, int i, int j, int whereToLook, int constraint) {
         //Como eh olhar vertical deve ser usado o i
-        if( i <= constraint && i >= 0 ) {
+        if( i < constraint && i >= 0 ) {
             // Ver a posicao e checar se eh uma parede ou void
             if( data[whereToLook][j] != 4 && data[whereToLook][j] != 6) {
                 return true;
@@ -66,7 +66,7 @@ public class GraphNode {
     
     private boolean horizontalLook(int[][] data, int i, int j, int whereToLook, int constraint) {
         //Como eh olhar vertical deve ser usado o i
-        if( j <= constraint && j > 0) {
+        if( j < constraint && j > 0) {
             // Ver a posicao e checar se eh uma parede ou void
             if( data[i][whereToLook] != 4 && data[i][whereToLook] != 6) {
                 return true;
@@ -80,7 +80,7 @@ public class GraphNode {
         int [][] data = e.getData();
         
         // Olhar para baixo
-        if( verticalLook(data, i, j, (i+1), e.getHeight()-2 ) )
+        if( verticalLook(data, i, j, (i+1), e.getHeight()-1 ) )
             this.neighborsAmount++;
         
         // Olhar para cima
@@ -88,7 +88,7 @@ public class GraphNode {
             this.neighborsAmount++;
         
         // Olhar para a direita
-        if( horizontalLook(data, i, j, (j+1), e.getWidth()-2 ) )
+        if( horizontalLook(data, i, j, (j+1), e.getWidth()-1 ) )
             this.neighborsAmount++;
         
         // Olhar para a esquerda

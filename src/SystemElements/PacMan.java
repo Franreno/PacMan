@@ -12,13 +12,17 @@ public class PacMan extends Movement{
 
     private boolean powerStatus;
     private boolean alive;
+    private int lifes;
+    private Points points;
     
-    public PacMan(Graph G, Map m) {
+    public PacMan(Graph G, Map m, Points p) {
         super(G,m);
         this.powerStatus = false;
         this.alive = true;
+        this.lifes = 3;
+        this.points = p;
         setFirstPosition();
-        setVelocity(0,1);
+        setVelocity(0,0);
     }
     
     @Override
@@ -89,6 +93,17 @@ public class PacMan extends Movement{
             }
         }
     }
+    
+    private void checkEatenValue(int value) {
+        switch(value) {
+            // Ate normal Food
+            case 1 -> this.points.hasEaten(1);
+            // Ate super food
+            case 2 -> this.points.hasEaten(2);
+            // Ate fruit
+            case 3 -> this.points.hasEaten(3);
+        }
+    }
      
     private void updadtePacManOnMap() {
         
@@ -96,6 +111,13 @@ public class PacMan extends Movement{
         this.map.setValueAtMap(0, this.pos[0], this.pos[1]);
         this.pos[0] += this.dpos[0];
         this.pos[1] += this.dpos[1];
+        
+        // Get new node
+        System.out.println("Getting block of value: " + (this.map.getWidth()*this.pos[0] + this.pos[1]) + " as (" + this.map.getWidth() + " * " + this.pos[0] + " + " + this.pos[1] + ")" );
+        this.gn = this.G.getGraphNode( this.map.getWidth()*this.pos[0] + this.pos[1] );
+        System.out.println(this.gn.toString());
+        
+        checkEatenValue(this.gn.getBlockValue());
         
         // Set new position
         this.map.setValueAtMap(10, this.pos[0], this.pos[1]);

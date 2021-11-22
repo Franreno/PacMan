@@ -17,7 +17,6 @@ public class Graph {
     public Graph(Map e) {
         hashList = new HashMap<>();
         numVertices = 0;
-        int auxNumVertices = 0;
         int[][] data = e.getData();
         for(int i=0; i<e.getHeight(); i++) {
             for(int j=0; j<e.getWidth(); j++) {
@@ -45,7 +44,7 @@ public class Graph {
         GraphNode gn = this.hashList.get(index);
         if (gn == null)
             return null;
-        else if(gn.getBlockValue() != 1 && gn.getBlockValue() != 0 && gn.getBlockValue() != 5)
+        else if(gn.getBlockValue() == 4 || gn.getBlockValue() == 6)
             return null;
         else
             return gn;
