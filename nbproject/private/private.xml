@@ -3,9 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/franreno/Documents/gitrepo/PacMan/src/SystemElements/Ghost.java</file>
+            <file>file:/home/franreno/Documents/gitrepo/PacMan/src/Engine/GraphNode.java</file>
             <file>file:/home/franreno/Documents/gitrepo/PacMan/src/Main/Main.java</file>
+            <file>file:/home/franreno/Documents/gitrepo/PacMan/src/SystemElements/Movement.java</file>
             <file>file:/home/franreno/Documents/gitrepo/PacMan/src/Engine/Map.java</file>
+            <file>file:/home/franreno/Documents/gitrepo/PacMan/src/Engine/Graph.java</file>
             <file>file:/home/franreno/Documents/gitrepo/PacMan/src/SystemElements/PacMan.java</file>
         </group>
     </open-files>

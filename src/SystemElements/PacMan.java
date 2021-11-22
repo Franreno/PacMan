@@ -1,26 +1,38 @@
 package SystemElements;
 
 import Engine.Map;
+import Engine.Graph;
+import Engine.GraphNode;
 
 /**
  *
  * @author franreno
  */
-public class PacMan {
-    private int[] pos; // Pacman Position
-    private int[] dpos; // Pacman Velocity
+public class PacMan extends Movement{
+
+    private boolean powerStatus;
+    private boolean alive;
     
-    public PacMan(Map m) {
-        this.pos = new int[2];
-        this.dpos = new int[2];
-        
+    public PacMan(Graph G, Map m) {
+        super(G,m);
+        this.powerStatus = false;
+        this.alive = true;
+        setFirstPosition();
+        setVelocity(0,1);
+    }
+    
+    @Override
+    protected void setFirstPosition() {
         this.pos[0] = 23;
         this.pos[1] = 14;
-        
-        this.dpos[0] = 0;
-        this.dpos[1] = 1;
-        
-        this.updadtePacManOnMap(m);
+        this.gn = this.G.getGraphNode( this.map.getWidth() * this.pos[0] + this.pos[1] );
+        updadtePacManOnMap();
+    }
+    
+    @Override
+    protected void setVelocity(int dVertical, int dHorizontal) {
+        this.dpos[0] = dVertical;
+        this.dpos[1] = dHorizontal;
     }
     
     private boolean verticalPositionValidation(int[][] data, int height, int x, int y) {
@@ -43,33 +55,49 @@ public class PacMan {
             return true;
     }
     
-    public void updatePacMan(Map e) {
-        int[][] data = e.getData();
-        int height = e.getHeight();
-        int width = e.getWidth();
+    public void updatePacMan() {
+        int[][] data = this.map.getData();
+        int height = this.map.getHeight();
+        int width = this.map.getWidth();
         
         
         if(this.dpos[0] != 0) {
             if(verticalPositionValidation(data, height, this.pos[0], this.pos[1]))
-                updadtePacManOnMap(e);
+                updadtePacManOnMap();
         }
         
         if(this.dpos[1] != 0) {
             if(horizontalPositionValidation(data, width, this.pos[0], this.pos[1]))
-                updadtePacManOnMap(e);
+                updadtePacManOnMap();
         }
         
     }
     
-    private void updadtePacManOnMap(Map m) {
-        System.out.println("pos: (" + this.pos[0] + "," + this.pos[1] + ")");
+    public void updateVelocity(char ch) {
+        switch(ch) {
+            case 'w' -> {
+                setVelocity(-1, 0);
+            }
+            case 's' -> {
+                setVelocity(1, 0);
+            }
+            case 'd' -> {
+                setVelocity(0, 1);
+            }
+            case 'a' -> {
+                setVelocity(0, -1);
+            }
+        }
+    }
+     
+    private void updadtePacManOnMap() {
         
         // Clear last position
-        m.setValueAtMap(0, this.pos[0], this.pos[1]);
+        this.map.setValueAtMap(0, this.pos[0], this.pos[1]);
         this.pos[0] += this.dpos[0];
         this.pos[1] += this.dpos[1];
         
         // Set new position
-        m.setValueAtMap(10, this.pos[0], this.pos[1]);
+        this.map.setValueAtMap(10, this.pos[0], this.pos[1]);
     }
 }

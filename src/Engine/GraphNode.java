@@ -51,7 +51,7 @@ public class GraphNode {
     private int calculateNodeID(int width, int i, int j ) {
         return width*i + j;
     }
-    
+      
     private boolean verticalLook(int[][] data, int i, int j, int whereToLook, int constraint) {
         //Como eh olhar vertical deve ser usado o i
         if( i <= constraint && i >= 0 ) {

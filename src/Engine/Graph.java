@@ -36,7 +36,21 @@ public class Graph {
             }
         }
     }
-       
+    
+    public int getNumVertices() {
+        return this.numVertices;
+    }
+
+    public GraphNode getGraphNode(int index) {
+        GraphNode gn = this.hashList.get(index);
+        if (gn == null)
+            return null;
+        else if(gn.getBlockValue() != 1 && gn.getBlockValue() != 0 && gn.getBlockValue() != 5)
+            return null;
+        else
+            return gn;
+    }
+    
     
     @Override
     public String toString() {
