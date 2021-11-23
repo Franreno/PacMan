@@ -1,5 +1,6 @@
 package SystemElements;
 
+import Engine.Points;
 import Engine.Map;
 import Engine.Graph;
 import Engine.GraphNode;
@@ -21,15 +22,19 @@ public class PacMan extends Movement{
         this.alive = true;
         this.lifes = 3;
         this.points = p;
-        setFirstPosition();
         setVelocity(0,0);
+        setFirstPosition();
     }
     
     @Override
     protected void setFirstPosition() {
-        this.pos[0] = 23;
-        this.pos[1] = 14;
-        this.gn = this.G.getGraphNode( this.map.getWidth() * this.pos[0] + this.pos[1] );
+        boolean flag = false;
+        while(!flag) {
+            this.gn = this.G.getRandomGraphNode();
+            if(this.gn.getBlockValue() != 2)
+                flag = true;
+        }
+        this.pos = this.gn.getPos();
         updadtePacManOnMap();
     }
     
@@ -63,6 +68,9 @@ public class PacMan extends Movement{
         int[][] data = this.map.getData();
         int height = this.map.getHeight();
         int width = this.map.getWidth();
+        
+        if(this.points.getPowerTimer() != 0)
+            this.points.decreasePowerTimer();
         
         
         if(this.dpos[0] != 0) {
@@ -108,18 +116,16 @@ public class PacMan extends Movement{
     private void updadtePacManOnMap() {
         
         // Clear last position
-        this.map.setValueAtMap(0, this.pos[0], this.pos[1]);
+        this.gn.setBlockValue(0);
+        this.map.setValueAtMap(0, this.gn);
         this.pos[0] += this.dpos[0];
         this.pos[1] += this.dpos[1];
         
         // Get new node
-        System.out.println("Getting block of value: " + (this.map.getWidth()*this.pos[0] + this.pos[1]) + " as (" + this.map.getWidth() + " * " + this.pos[0] + " + " + this.pos[1] + ")" );
         this.gn = this.G.getGraphNode( this.map.getWidth()*this.pos[0] + this.pos[1] );
-        System.out.println(this.gn.toString());
-        
         checkEatenValue(this.gn.getBlockValue());
         
         // Set new position
-        this.map.setValueAtMap(10, this.pos[0], this.pos[1]);
+        this.map.setValueAtMap(10, this.gn);
     }
 }

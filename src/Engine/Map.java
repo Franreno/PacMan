@@ -22,6 +22,17 @@ public class Map {
     private int mapWidth;
     private int[][] mapData;
     
+    //Map Colors
+    private static final String COLOR_RESET = "\u001B[0m";
+    private static final String COLOR_YELLOW = "\u001B[33m"; //Pacman's color
+    private static final String COLOR_RED = "\u001B[31m"; //Blinky's color
+    private static final String COLOR_GREEN = "\u001B[32m"; // Inky's color
+    private static final String COLOR_CYAN = "\u001B[36m"; // Clyde's color
+    private static final String COLOR_PURPLE = "\u001B[35m"; // Pinky's color
+    private static final String COLOR_BLUE = "\u001B[34m"; // Dead Ghost
+    private static final String ANSI_WHITE = "\u001B[37m"; // Reseting Ghost
+    
+    
     public Map(String levelName) {
         JSONParser jsonParser = new JSONParser();
         
@@ -64,16 +75,21 @@ public class Map {
         return this.mapData;
     }
     
-    public void setValueAtMap(int value, int x, int y) {
+    public void setValueAtMap(int updateValue, GraphNode gn) {
+        int heightPositon = gn.getPos()[0];
+        int widthPosition = gn.getPos()[1];
+        
+        int blockValue = gn.getBlockValue();
+        
         // Verificar se a posicao eh valida
-        if( x > this.mapWidth || x < 0) 
+        if( heightPositon > this.mapHeight || heightPositon < 0) 
             throw new IndexOutOfBoundsException();
-        if( y > this.mapHeight || x < 0)
+        if( widthPosition > this.mapWidth || widthPosition < 0)
             throw new IndexOutOfBoundsException();
-        if( this.mapData[x][y] == 6 || this.mapData[x][y] == 4)
+        if( blockValue == 6 || blockValue == 4)
             throw new IndexOutOfBoundsException();
         
-        this.mapData[x][y] = value;
+        this.mapData[heightPositon][widthPosition] = updateValue;
         
     }
     
@@ -87,7 +103,7 @@ public class Map {
                 System.out.print("· ");
             //Poweup pixel
             case 2 -> 
-                System.out.print("@ ");
+                System.out.print("⚫ ");
             //Fruit pixel
             case 3 -> 
                 System.out.print("F ");
@@ -99,8 +115,18 @@ public class Map {
             //Void pixels
             case 6 -> System.out.print("  ");
             //PacMan
-            case 10 -> System.out.print("® ");
-            
+            case 10 -> System.out.print(COLOR_YELLOW + "\uD83D\uDE00" + COLOR_RESET);
+            //⚫
+            //Blinky
+            case 11 -> System.out.print(COLOR_RED + "⚫ " + COLOR_RESET);
+            //Inky
+            case 13 -> System.out.print(COLOR_GREEN + "⚫ " + COLOR_RESET);
+            //Clyde
+            case 17 -> System.out.print(COLOR_CYAN + "⚫ " + COLOR_RESET);
+            //Pinky
+            case 19 -> System.out.print(COLOR_PURPLE + "⚫ " + COLOR_RESET);
+            // Eatable ghosts
+            case 23 -> System.out.print(COLOR_BLUE + "⚫ " + COLOR_RESET);
         }
     }
     

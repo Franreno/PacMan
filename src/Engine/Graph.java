@@ -3,6 +3,8 @@ package Engine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Random;
+import java.util.Set;
 
 /**
  *
@@ -10,7 +12,7 @@ import java.util.HashMap;
  */
 public class Graph {
     private int numVertices;
-    private HashMap<Integer, GraphNode> hashList;
+    public HashMap<Integer, GraphNode> hashList;
     
     
     
@@ -39,12 +41,18 @@ public class Graph {
     public int getNumVertices() {
         return this.numVertices;
     }
+    
+    public GraphNode getRandomGraphNode() {
+        ArrayList<Integer> keys = new ArrayList(this.hashList.keySet());
+        Random rand = new Random();
+        return this.hashList.get( keys.get(rand.nextInt(keys.size()) ));
+    }
 
     public GraphNode getGraphNode(int index) {
         GraphNode gn = this.hashList.get(index);
         if (gn == null)
             return null;
-        else if(gn.getBlockValue() == 4 || gn.getBlockValue() == 6)
+        else if(gn.getBlockValue() == 4 || gn.getBlockValue() == 6) 
             return null;
         else
             return gn;

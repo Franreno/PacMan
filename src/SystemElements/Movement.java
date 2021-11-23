@@ -15,6 +15,7 @@ public class Movement {
     protected int[] pos;
     protected int[] dpos;
     protected int[] cumulative;
+    protected int elementValue;
     
     public Movement(Graph _G, Map m) {
         this.G = _G;
@@ -22,13 +23,16 @@ public class Movement {
         this.pos = new int[2];
         this.dpos = new int[2];
         this.gn = null;
+        this.elementValue = -1;
     }
-    
+        
     protected void setFirstPosition() {
-        Random random = new Random();
-        int upperLimit = G.getNumVertices();
-        while(this.gn == null) 
-            this.gn = G.getGraphNode(random.nextInt(upperLimit));
+        boolean flag = false;
+        while(!flag) {
+            this.gn = G.getRandomGraphNode();
+            if(this.gn.getBlockValue() != 2 && this.gn.getBlockValue() != 10 )
+                flag = true;
+        } 
         
         this.pos = this.gn.getPos();
     }
@@ -36,5 +40,9 @@ public class Movement {
     protected void setVelocity(int dVertical, int dHorizontal) {
         this.dpos[0] = dVertical;
         this.dpos[1] = dHorizontal;
+    }
+    
+    protected void updateOnMap() {
+        this.map.setValueAtMap(elementValue, gn);
     }
 }

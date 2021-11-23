@@ -1,4 +1,4 @@
-package SystemElements;
+package Engine;
 
 /**
  *
@@ -9,12 +9,14 @@ public class Points {
     private int points;
     private int ghostsEaten;
     private int level;
+    private int powerTimer;
     
     public Points() {
         this.ammountEaten = 0;
         this.points = 0;
         this.ghostsEaten = 0;
         this.level = 1;
+        this.powerTimer = 0;
     }
     
     public int getPoints() {
@@ -23,6 +25,14 @@ public class Points {
     
     public int getAmmountEaten() {
         return this.ammountEaten;
+    }
+    
+    public int getPowerTimer() {
+        return this.powerTimer;
+    }
+    
+    public void decreasePowerTimer() {
+        this.powerTimer--;
     }
     
     public void increaseLevel() {
@@ -40,6 +50,7 @@ public class Points {
     
     private void ateSuperFood() {
         this.points += 50;
+        this.powerTimer = 20;
     }
     
     private void ateFruit() {

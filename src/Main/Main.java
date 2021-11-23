@@ -3,7 +3,8 @@ package Main;
 import Engine.Map;
 import Engine.Graph;
 import SystemElements.PacMan;
-import SystemElements.Points;
+import SystemElements.Blinky;
+import Engine.Points;
 
 import java.util.Scanner;
 
@@ -23,16 +24,19 @@ public class Main {
         Graph _graph = new Graph(_map);
         Points systemPoints = new Points();
         PacMan _pacman = new PacMan(_graph, _map, systemPoints);
+        Blinky _blinky = new Blinky(_graph, _map, systemPoints);
         _map.printMap();
-//        System.out.println(_graph.toString());
-        
-        
-        boolean flag = false;
-        while(!flag) {
+//        System.out.println(_graph.hashList.keySet());        
+        char ch = 0;
+        while(ch != 'q') {
             _pacman.updatePacMan();
-            System.out.println("Pontuação: " + systemPoints.getPoints());
+            System.out.println("Pontuação: " + systemPoints.getPoints() +  "    powerTimer: " + systemPoints.getPowerTimer());
+            
             _map.printMap();
-            _pacman.updateVelocity(scanner.next().charAt(0));
+
+            ch = scanner.next().charAt(0);
+            _pacman.updateVelocity(ch);
+            _blinky.hasPacManEatenPallet();
             
         }
     }
