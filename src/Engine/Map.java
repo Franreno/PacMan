@@ -32,7 +32,7 @@ public class Map {
     private static final String COLOR_BLUE = "\u001B[34m"; // Dead Ghost
     private static final String COLOR_WHITE = "\u001B[37m"; // Reseting Ghost
     
-    private static final String BACKGROUND_COLOR_RED = "\u001B[47m";
+    private static final String BACKGROUND_COLOR_RED = "\u001B[41m";
     
     
     public Map(String levelName) {
@@ -97,11 +97,11 @@ public class Map {
     
     private void printTargetMap(int value) {
         String buffer = "";
-//        if(value >= 100)  {
-//            buffer += BACKGROUND_COLOR_RED;
-//         System.out.print(BACKGROUND_COLOR_RED);
-//            value -= 100;
-//        }
+        if(value >= 100)  {
+            buffer += BACKGROUND_COLOR_RED;
+         System.out.print(BACKGROUND_COLOR_RED);
+            value -= 100;
+        }
         
         switch(value) {
             //Empty pixel
@@ -140,9 +140,6 @@ public class Map {
             case 29 -> System.out.print(buffer + COLOR_WHITE + "⚫ " + COLOR_RESET);
         }
         
-        if(value >= 100) {
-            System.out.print(COLOR_RED + "▲ " + COLOR_RESET);
-        }
     }
     
     public void printMap() {

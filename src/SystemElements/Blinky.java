@@ -7,6 +7,7 @@ import Engine.Points;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -14,6 +15,7 @@ import java.util.ArrayList;
  */
 public class Blinky extends Ghosts{
     
+    private int mainPathHeader;
     private ArrayList<Integer> totalPath;
     
     public Blinky(Graph G, Map m, Points p) {
@@ -29,6 +31,12 @@ public class Blinky extends Ghosts{
     private void paintPath() {
         if(this.totalPath == null || this.totalPath.isEmpty())
             return;
+        
+        // nao pintar o pacman e o fantasma.
+        this.totalPath.remove(0);
+        this.totalPath.remove(this.totalPath.size() -1);
+        
+        System.out.println(this.totalPath);
         
         for(Integer e : this.totalPath) {
             GraphNode gn = this.G.getGraphNode(e);
@@ -53,23 +61,27 @@ public class Blinky extends Ghosts{
     
         
     public void pathfindPacMan(GraphNode goal) {
-        HashMap<Integer, Integer> path = this.G.A_Star(this.gn, goal);
+        GraphNode path = this.G.A_Star(this.gn, goal);
 
         if( (!this.totalPath.isEmpty()) ) {
             clearPath();
             this.totalPath.clear();
         }
-        
-        System.out.println(path);
-        while( (path.containsKey( goal.getId() )) ) {
-            goal = this.G.getGraphNode( path.get( goal.getId() ) );
-            this.totalPath.add(0, goal.getId());
-        }
-        
-        //Remove blinky from the list
-        this.totalPath.remove(0);
-        paintPath();
-        System.out.println(this.totalPath);
+
+
+          while(path.parent != null) {
+              this.totalPath.add(path.getId());
+              path = path.parent;
+          }
+
+          this.totalPath.add(path.getId());
+          Collections.reverse(totalPath);
+          
+//          System.out.println(this.totalPath);
+
+//        //Remove blinky and pacman from the list
+          paintPath();
+//        System.out.println(this.totalPath);
         
     }
     

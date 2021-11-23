@@ -65,56 +65,54 @@ public class Graph {
         int dy = Math.abs( pos[1] - goal[1] );
         return (dx + dy);
     }
-    
-    public HashMap<Integer, Integer> A_Star(GraphNode start, GraphNode goal) {
-        // Conjunto de nodes descobertos
-        PriorityQueue<Integer> openSet = new PriorityQueue<>();
-        openSet.add(start.getId());
         
-        // Para um node 'n' cameFrom[n] eh o node que o precede com o menor caminho desde o comeco ate n.
-        HashMap<Integer, Integer> cameFrom = new HashMap<>();
-        
-        // Para um node 'n', gScore[n] eh o custo do menor caminho do comeco ate n.
-        HashMap<Integer, Integer> gScore = new HashMap<>();
-        gScore.put(start.getId(), 0);
-        
-        // Para um node 'n', fScore[n] = gScore[n] + h(n).
-        // fScore[n] representa a atual melhor tentativa do menor caminho do comeco ate n.
-        HashMap<Integer, Integer> fScore = new HashMap<>();
-        fScore.put(start.getId(), h(start.getPos(), goal.getPos()));
-        
-        
-        while (!openSet.isEmpty()) {
-            GraphNode current = hashList.get( openSet.poll() );
+    public GraphNode A_Star(GraphNode start, GraphNode goal) {
+        ArrayList<GraphNode> openList = new ArrayList<>();
+        ArrayList<GraphNode> closedList = new ArrayList<>();
+
+        GraphNode current = start;
+        current.g = 0;
+        current.f = current.g + h(current.getPos(), goal.getPos());
+        while(current.getId() != goal.getId()) {
             
-            if (current.getId() == goal.getId()) {
-                System.out.println("Chegou no fim");
-                return cameFrom;
-            }
+            int gScore = current.g + 1;
             
-            ArrayList<GraphNode> neighbors = current.getList();
-            for (GraphNode neighbor : neighbors) {
+            for(GraphNode neighbor : current.getList()) {
+                GraphNode adj = this.hashList.get(neighbor.getId());
                 
-                // tentative_gScore eh a distancia do comeco ate o neighbor pela distancia gScore
-                int tentative_gScore = gScore.getOrDefault(current.getId(), 10000) + 1;
-                
-                if (tentative_gScore < gScore.getOrDefault(neighbor.getId(), 10000)) {
-                    // Esse caminho ate o neighbor eh o melhor que todos os outros. Guardar ele
-                    cameFrom.put(neighbor.getId(), current.getId());
-                    gScore.put(neighbor.getId(), tentative_gScore);
-                    fScore.put(neighbor.getId(), ( tentative_gScore + h( neighbor.getPos(), goal.getPos() ) ));
-                    if (!openSet.contains(neighbor.getId())) {
-                        openSet.add(neighbor.getId());
+                if( ( !closedList.contains(adj) ) && (!openList.contains( adj )) ) {
+                    openList.add(this.hashList.get(adj.getId()));
+                    adj.g = gScore;
+                    int fScore = adj.g + h(adj.getPos(), goal.getPos());
+                    
+                    if(fScore < adj.f) {
+                        adj.f = fScore;
+                        adj.parent = current;
                     }
                 }
             }
+            
+            closedList.add(this.hashList.get(current.getId()));
+            
+            //Find lowest f value from openList
+            int lowest = 10000;
+            int indexStorage = 0;
+            for(int i=0; i<openList.size(); i++) {
+                GraphNode gn = openList.get(i);
+                if(gn.f < lowest) {
+                    lowest = gn.f;
+                    indexStorage = i;
+                }
+            }
+            
+            //Lowest value in list is found at indexStorage
+            current = openList.get(indexStorage); 
+            openList.remove(indexStorage);
         }
         
-        System.out.println("Nao conseguiu achar o goal");
-        return null;
+        
+        return current;
     }
-    
-    
     
     
     @Override

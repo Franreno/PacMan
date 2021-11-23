@@ -5,19 +5,24 @@ import java.util.ArrayList;
  *
  * @author franreno
  */
-public class GraphNode {
+public class GraphNode{
     private int id;
     private int blockValue;
     private int[] pos;
     private int neighborsAmount;
     private ArrayList<GraphNode> list;
     
+    public GraphNode parent;
+    public int f = 10000;
+    public int g = 10000;
+    
     public GraphNode(int _id, int _blockValue, int x, int y, Map e) {
         id = _id;
         blockValue = _blockValue;
         pos = new int[2];
         pos[0] = x;
-        pos[1] = y;        
+        pos[1] = y;
+        parent = null;
         list = new ArrayList();
         this.calculateNeighbors(e, x, y);
     }
@@ -135,5 +140,5 @@ public class GraphNode {
     public String toString() {
         return "Id: " + id + " BlockValue: " + blockValue + " Pos: (" + pos[0] + "," + pos[1] + ") Neighbors: " + neighborsAmount + " Neighbors: " + neighborsToString();
     }
-    
+
 }
