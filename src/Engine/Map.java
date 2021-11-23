@@ -30,7 +30,9 @@ public class Map {
     private static final String COLOR_CYAN = "\u001B[36m"; // Clyde's color
     private static final String COLOR_PURPLE = "\u001B[35m"; // Pinky's color
     private static final String COLOR_BLUE = "\u001B[34m"; // Dead Ghost
-    private static final String ANSI_WHITE = "\u001B[37m"; // Reseting Ghost
+    private static final String COLOR_WHITE = "\u001B[37m"; // Reseting Ghost
+    
+    private static final String BACKGROUND_COLOR_RED = "\u001B[47m";
     
     
     public Map(String levelName) {
@@ -94,39 +96,52 @@ public class Map {
     }
     
     private void printTargetMap(int value) {
+        String buffer = "";
+//        if(value >= 100)  {
+//            buffer += BACKGROUND_COLOR_RED;
+//         System.out.print(BACKGROUND_COLOR_RED);
+//            value -= 100;
+//        }
+        
         switch(value) {
             //Empty pixel
             case 0 -> 
-                System.out.print("  ");
+                System.out.print(buffer + "  ");
             //Food pixel
             case 1 -> 
-                System.out.print("· ");
+                System.out.print(buffer +  COLOR_YELLOW + "· " + COLOR_RESET);
             //Poweup pixel
             case 2 -> 
-                System.out.print("⚫ ");
+                System.out.print(buffer + COLOR_YELLOW + "◆ " + COLOR_RESET);
             //Fruit pixel
             case 3 -> 
-                System.out.print("F ");
+                System.out.print(buffer + "F ");
             //Wall pixel
             case 4 -> 
-                System.out.print("■ ");
+                System.out.print(buffer + COLOR_BLUE + "▩ " + COLOR_RESET);
             //Ghost zone pixels
-            case 5 -> System.out.print("  ");
+            case 5 -> System.out.print(buffer + "  ");
             //Void pixels
-            case 6 -> System.out.print("  ");
+            case 6 -> System.out.print(buffer + "  ");
             //PacMan
-            case 10 -> System.out.print(COLOR_YELLOW + "\uD83D\uDE00" + COLOR_RESET);
+            case 10 -> System.out.print(buffer + COLOR_YELLOW + "\uD83D\uDE00" + COLOR_RESET);
             //⚫
             //Blinky
-            case 11 -> System.out.print(COLOR_RED + "⚫ " + COLOR_RESET);
+            case 11 -> System.out.print(buffer + COLOR_RED + "⚫ " + COLOR_RESET);
             //Inky
-            case 13 -> System.out.print(COLOR_GREEN + "⚫ " + COLOR_RESET);
+            case 13 -> System.out.print(buffer + COLOR_GREEN + "⚫ " + COLOR_RESET);
             //Clyde
-            case 17 -> System.out.print(COLOR_CYAN + "⚫ " + COLOR_RESET);
+            case 17 -> System.out.print(buffer + COLOR_CYAN + "⚫ " + COLOR_RESET);
             //Pinky
-            case 19 -> System.out.print(COLOR_PURPLE + "⚫ " + COLOR_RESET);
+            case 19 -> System.out.print(buffer + COLOR_PURPLE + "⚫ " + COLOR_RESET);
             // Eatable ghosts
-            case 23 -> System.out.print(COLOR_BLUE + "⚫ " + COLOR_RESET);
+            case 23 -> System.out.print(buffer + COLOR_BLUE + "⚫ " + COLOR_RESET);
+            // Reseting Ghosts
+            case 29 -> System.out.print(buffer + COLOR_WHITE + "⚫ " + COLOR_RESET);
+        }
+        
+        if(value >= 100) {
+            System.out.print(COLOR_RED + "▲ " + COLOR_RESET);
         }
     }
     
@@ -139,17 +154,17 @@ public class Map {
         }
     }
     
-   public int countAmountOfLegalPlaces() {
-       int count = 0;
-       for(int i=0; i<mapHeight; i++) {
-           for(int j=0; j<mapWidth; j++) {
-               if(mapData[i][j] != 4 && mapData[i][j] != 6) {
-                   count++;
-               }
-           }
-       }
-       
-       return count;
-   }
+    public void printDebugMap() {
+        for(int i=0; i<mapHeight; i++) {
+            for(int j=0; j<mapWidth; j++){
+                System.out.print(mapData[i][j]+" ");
+            }
+            System.out.print("\n");
+        }
+    }
     
+    public int getValueFromMap(int[] pos) {
+        return this.mapData[pos[0]][pos[1]];
+    }
+        
 }

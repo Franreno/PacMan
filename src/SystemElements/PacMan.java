@@ -15,6 +15,7 @@ public class PacMan extends Movement{
     private boolean alive;
     private int lifes;
     private Points points;
+    private GraphNode previousNode;
     
     public PacMan(Graph G, Map m, Points p) {
         super(G,m);
@@ -26,6 +27,10 @@ public class PacMan extends Movement{
         setFirstPosition();
     }
     
+    public GraphNode getPacManNode() {
+        return this.gn;
+    }
+    
     @Override
     protected void setFirstPosition() {
         boolean flag = false;
@@ -34,6 +39,7 @@ public class PacMan extends Movement{
             if(this.gn.getBlockValue() != 2)
                 flag = true;
         }
+        this.previousNode = this.gn;
         this.pos = this.gn.getPos();
         updadtePacManOnMap();
     }
@@ -103,6 +109,9 @@ public class PacMan extends Movement{
     }
     
     private void checkEatenValue(int value) {
+        if(value >= 100) 
+            value -=100;
+        
         switch(value) {
             // Ate normal Food
             case 1 -> this.points.hasEaten(1);
@@ -116,8 +125,12 @@ public class PacMan extends Movement{
     private void updadtePacManOnMap() {
         
         // Clear last position
-        this.gn.setBlockValue(0);
-        this.map.setValueAtMap(0, this.gn);
+        if(this.previousNode.getBlockValue() < 10 ) {
+            this.map.setValueAtMap(0, this.gn);
+        } else {
+            this.map.setValueAtMap(this.previousNode.getBlockValue(), gn);
+        }
+        
         this.pos[0] += this.dpos[0];
         this.pos[1] += this.dpos[1];
         

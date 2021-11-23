@@ -30,8 +30,10 @@ public class Main {
         char ch = 0;
         while(ch != 'q') {
             _pacman.updatePacMan();
-            System.out.println("Pontuação: " + systemPoints.getPoints() +  "    powerTimer: " + systemPoints.getPowerTimer());
+            _blinky.pathfindPacMan(_pacman.getPacManNode());
+            System.out.println("Pontuação: " + systemPoints.getPoints() +  "    powerTimer: " + systemPoints.getPowerTimer() + "    PacManID: " + _pacman.getPacManNode().getId());
             
+            _map.printDebugMap();
             _map.printMap();
 
             ch = scanner.next().charAt(0);
