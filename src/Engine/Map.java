@@ -77,31 +77,28 @@ public class Map {
         return this.mapData;
     }
     
-    public void setValueAtMap(int updateValue, GraphNode gn) {
-        int heightPositon = gn.getPos()[0];
-        int widthPosition = gn.getPos()[1];
+    public void setValueAtMap(int updateValue, int[] pos) {
+        int heightPosition = pos[0];
+        int widthPosition = pos[1];
         
-        int blockValue = gn.getBlockValue();
         
         // Verificar se a posicao eh valida
-        if( heightPositon > this.mapHeight || heightPositon < 0) 
+        if( heightPosition > this.mapHeight || heightPosition < 0) 
             throw new IndexOutOfBoundsException();
         if( widthPosition > this.mapWidth || widthPosition < 0)
             throw new IndexOutOfBoundsException();
-        if( blockValue == 6 || blockValue == 4)
-            throw new IndexOutOfBoundsException();
         
-        this.mapData[heightPositon][widthPosition] = updateValue;
+        this.mapData[heightPosition][widthPosition] = updateValue;
         
     }
     
     private void printTargetMap(int value) {
         String buffer = "";
-        if(value >= 100)  {
-            buffer += BACKGROUND_COLOR_RED;
-         System.out.print(BACKGROUND_COLOR_RED);
-            value -= 100;
-        }
+//        if(value >= 100)  {
+//            buffer += BACKGROUND_COLOR_RED;
+//         System.out.print(BACKGROUND_COLOR_RED);
+//            value -= 100;
+//        }
         
         switch(value) {
             //Empty pixel
@@ -139,7 +136,9 @@ public class Map {
             // Reseting Ghosts
             case 29 -> System.out.print(buffer + COLOR_WHITE + "⚫ " + COLOR_RESET);
         }
-        
+        if(value >= 100) {
+            System.out.print(COLOR_RED + "▲ " + COLOR_RESET);
+        }
     }
     
     public void printMap() {

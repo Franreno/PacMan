@@ -58,6 +58,10 @@ public class Graph {
             return gn;
     }
     
+    
+    public void updateHashMap(int key, GraphNode gn) {
+        this.hashList.replace(key, gn);
+    }
         
     private int h(int[] pos, int[] goal) {
         //Manhattan Distance

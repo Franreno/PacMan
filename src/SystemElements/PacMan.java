@@ -23,6 +23,7 @@ public class PacMan extends Movement{
         this.alive = true;
         this.lifes = 3;
         this.points = p;
+        this.elementValue = 10;
         setVelocity(0,0);
         setFirstPosition();
     }
@@ -39,8 +40,10 @@ public class PacMan extends Movement{
             if(this.gn.getBlockValue() != 2)
                 flag = true;
         }
-        this.previousNode = this.gn;
-        this.pos = this.gn.getPos();
+        int[] _randomPos = this.gn.getPos();
+        
+        this.pos[0] = _randomPos[0];
+        this.pos[1] = _randomPos[1];
         updadtePacManOnMap();
     }
     
@@ -48,47 +51,6 @@ public class PacMan extends Movement{
     protected void setVelocity(int dVertical, int dHorizontal) {
         this.dpos[0] = dVertical;
         this.dpos[1] = dHorizontal;
-    }
-    
-    private boolean verticalPositionValidation(int[][] data, int height, int x, int y) {
-        if ( x + this.dpos[0] > height-2 ) {
-            return false;
-        }
-        else if( data[x + this.dpos[0]][y] == 4 ) {
-            return false;
-        }
-        else
-            return true;
-    }
-    
-    private boolean horizontalPositionValidation(int[][] data, int width, int x, int y) {
-        if ( y + this.dpos[1] > width-2 || y + this.dpos[1] < 0)
-            return false;
-        else if( data[x][y + this.dpos[1]] == 4 )
-            return false;
-        else
-            return true;
-    }
-    
-    public void updatePacMan() {
-        int[][] data = this.map.getData();
-        int height = this.map.getHeight();
-        int width = this.map.getWidth();
-        
-        if(this.points.getPowerTimer() != 0)
-            this.points.decreasePowerTimer();
-        
-        
-        if(this.dpos[0] != 0) {
-            if(verticalPositionValidation(data, height, this.pos[0], this.pos[1]))
-                updadtePacManOnMap();
-        }
-        
-        if(this.dpos[1] != 0) {
-            if(horizontalPositionValidation(data, width, this.pos[0], this.pos[1]))
-                updadtePacManOnMap();
-        }
-        
     }
     
     public void updateVelocity(char ch) {
@@ -121,24 +83,43 @@ public class PacMan extends Movement{
             case 3 -> this.points.hasEaten(3);
         }
     }
-     
-    private void updadtePacManOnMap() {
-        
-        // Clear last position
-        if(this.previousNode.getBlockValue() < 10 ) {
-            this.map.setValueAtMap(0, this.gn);
-        } else {
-            this.map.setValueAtMap(this.previousNode.getBlockValue(), gn);
-        }
-        
+    
+    
+    private void updatePacManPosition() {
         this.pos[0] += this.dpos[0];
         this.pos[1] += this.dpos[1];
+    }
+    
+    public void updatePacMan() {
+        if(this.points.getPowerTimer() != 0)
+            this.points.decreasePowerTimer();
         
-        // Get new node
-        this.gn = this.G.getGraphNode( this.map.getWidth()*this.pos[0] + this.pos[1] );
+        // Verificar se a nova posicao existe na lista de vizinhos
+        int nextFrameId = this.map.getWidth() * (this.pos[0] + this.dpos[0]) + (this.pos[1] + this.dpos[1]);
+        if( this.gn.checkForNeighbor( nextFrameId ) )
+            updadtePacManOnMap();
+    }
+    
+    
+    private void updadtePacManOnMap() {
+        // Limpar o conteudo que existe nesse lugar que o pacman esta.
+        // Onde o pacman esta eh vai ser 0 se o valor de onde ele esta eh 
+        // menor que 10 (menor que alguma entidade)
+        this.gn.setBlockValue(0);
+        this.G.updateHashMap(this.gn.getId(), this.gn);
+        this.map.setValueAtMap(0, this.gn.getPos());
+        
+        updatePacManPosition();
+        
+        // Pegar o valor do novo bloco
+        this.gn = this.G.getGraphNode( this.map.getWidth() * this.pos[0] + this.pos[1] );
+        
+        // Verificar o que o PacMan comeu
         checkEatenValue(this.gn.getBlockValue());
         
-        // Set new position
-        this.map.setValueAtMap(10, this.gn);
+        // Atualizar o mapa e o Grafo
+        this.gn.setBlockValue(this.elementValue);
+        this.G.updateHashMap(this.gn.getId(), this.gn);
+        this.map.setValueAtMap(this.elementValue, this.gn.getPos());
     }
 }

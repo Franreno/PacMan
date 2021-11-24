@@ -43,6 +43,6 @@ public class Movement {
     }
     
     protected void updateOnMap() {
-        this.map.setValueAtMap(elementValue, gn);
+        this.map.setValueAtMap(elementValue, gn.getPos());
     }
 }

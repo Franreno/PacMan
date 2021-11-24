@@ -52,10 +52,14 @@ public class GraphNode{
         this.blockValue = value;
     }
     
+    public boolean checkForNeighbor(int id) {
+        return this.list.stream().anyMatch(gn -> (gn.getId() == id));
+    }
+    
+    
     private int calculateNodeID(int width, int i, int j ) {
         return width*i + j;
     }
-      
     private boolean verticalLook(int[][] data, int i, int j, int whereToLook, int constraint) {
         //Como eh olhar vertical deve ser usado o i
         if( whereToLook < constraint && whereToLook >= 0 ) {

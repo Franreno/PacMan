@@ -25,15 +25,19 @@ public class Main {
         Points systemPoints = new Points();
         PacMan _pacman = new PacMan(_graph, _map, systemPoints);
         Blinky _blinky = new Blinky(_graph, _map, systemPoints);
-//        _map.printMap();
-//        System.out.println(_graph.toString());        
+
+//        System.out.println(_graph.toString());
         char ch = 0;
         while(ch != 'q') {
+            
             _pacman.updatePacMan();
+            
             _blinky.pathfindPacMan(_pacman.getPacManNode());
+            
+
             System.out.println("Pontuação: " + systemPoints.getPoints() +  "    powerTimer: " + systemPoints.getPowerTimer() + "    PacManID: " + _pacman.getPacManNode().getId());
             
-//            _map.printDebugMap();
+           
             _map.printMap();
 
             ch = scanner.next().charAt(0);

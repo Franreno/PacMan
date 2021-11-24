@@ -5,7 +5,6 @@ import Engine.GraphNode;
 import Engine.Map;
 import Engine.Points;
 
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -41,9 +40,13 @@ public class Blinky extends Ghosts{
         for(Integer e : this.totalPath) {
             GraphNode gn = this.G.getGraphNode(e);
             int blockValue = gn.getBlockValue();
+            
             if(blockValue < 10) {
-                this.map.setValueAtMap(blockValue + 100, gn);
+                gn.setBlockValue(blockValue + 100);
+                this.G.updateHashMap(e, gn);
+                this.map.setValueAtMap(blockValue + 100, gn.getPos());
             }
+            
         }
     }
     
@@ -53,9 +56,13 @@ public class Blinky extends Ghosts{
         
         for(Integer e : this.totalPath) {
             GraphNode gn = this.G.getGraphNode(e);
-            if(this.map.getValueFromMap(gn.getPos()) >= 100) {
-                this.map.setValueAtMap(gn.getBlockValue(), gn);
-            }
+            int blockValue = gn.getBlockValue();
+            
+            if(blockValue >= 100)
+                blockValue -= 100;
+            gn.setBlockValue(blockValue);
+            this.G.updateHashMap(e, gn);
+            this.map.setValueAtMap(blockValue, gn.getPos());
         }
     }
     
@@ -79,10 +86,7 @@ public class Blinky extends Ghosts{
           
 //          System.out.println(this.totalPath);
 
-//        //Remove blinky and pacman from the list
-          paintPath();
-//        System.out.println(this.totalPath);
-        
+          paintPath();        
     }
     
     
