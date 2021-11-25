@@ -13,7 +13,8 @@ import java.util.PriorityQueue;
 public class Graph {
     private int numVertices;
     public HashMap<Integer, GraphNode> hashList;
-    
+    private ArrayList<GraphNode> openList;
+    private ArrayList<GraphNode> closedList;
     
     
     public Graph(Map e) {
@@ -71,8 +72,8 @@ public class Graph {
     }
         
     public GraphNode A_Star(GraphNode start, GraphNode goal) {
-        ArrayList<GraphNode> openList = new ArrayList<>();
-        ArrayList<GraphNode> closedList = new ArrayList<>();
+        this.openList = new ArrayList<>();
+        this.closedList = new ArrayList<>();
 
         GraphNode current = start;
         current.g = 0;
@@ -116,6 +117,21 @@ public class Graph {
         
         
         return current;
+    }
+    
+    
+    public void clearContentOfLists() {
+        for(GraphNode helper : this.openList) {
+            helper.f = 10000;
+            helper.g = 10000;
+            helper.parent = null;
+        }
+        for(GraphNode helper : this.closedList) {
+//            System.out.println("Id: " + helper.getId() + " f: " + helper.f + " g: " + helper.g + " parent: " + helper.parent);
+            helper.f = 10000;
+            helper.g = 10000;
+            helper.parent = null;
+        }
     }
     
     

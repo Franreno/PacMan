@@ -25,7 +25,11 @@ public class Movement {
         this.gn = null;
         this.elementValue = -1;
     }
-        
+    
+    public GraphNode getNode() {
+        return this.gn;
+    }
+    
     protected void setFirstPosition() {
         boolean flag = false;
         while(!flag) {
@@ -34,7 +38,10 @@ public class Movement {
                 flag = true;
         } 
         
-        this.pos = this.gn.getPos();
+        int[] _randomPos = this.gn.getPos();
+        
+        this.pos[0] = _randomPos[0];
+        this.pos[1] = _randomPos[1];
     }
     
     protected void setVelocity(int dVertical, int dHorizontal) {

@@ -27,11 +27,7 @@ public class PacMan extends Movement{
         setVelocity(0,0);
         setFirstPosition();
     }
-    
-    public GraphNode getPacManNode() {
-        return this.gn;
-    }
-    
+        
     @Override
     protected void setFirstPosition() {
         boolean flag = false;

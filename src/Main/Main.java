@@ -29,21 +29,24 @@ public class Main {
 //        System.out.println(_graph.toString());
         char ch = 0;
         while(ch != 'q') {
+            System.out.println(_graph.toString());
             
-            _pacman.updatePacMan();
+            _blinky.pathfindPacMan(_pacman.getNode());
             
-            _blinky.pathfindPacMan(_pacman.getPacManNode());
             
 
-            System.out.println("Pontuação: " + systemPoints.getPoints() +  "    powerTimer: " + systemPoints.getPowerTimer() + "    PacManID: " + _pacman.getPacManNode().getId());
+            System.out.println("Pontuação: " + systemPoints.getPoints() +  "    powerTimer: " + systemPoints.getPowerTimer() + "    PacManID: " + _pacman.getNode().getId() + "    BlinkyID: " + _blinky.getNode().getId());
             
            
             _map.printMap();
 
             ch = scanner.next().charAt(0);
             _pacman.updateVelocity(ch);
-            _blinky.hasPacManEatenPallet();
             
+            
+            _blinky.updateOnMap();
+            _pacman.updatePacMan();
+            _blinky.hasPacManEatenPallet();
         }
     }
     

@@ -56,6 +56,15 @@ public class GraphNode{
         return this.list.stream().anyMatch(gn -> (gn.getId() == id));
     }
     
+//    public void cleanAllThisParentNodes() {
+//        if(this.parent == null)
+//            return;
+//        
+//        GraphNode helper = this.parent;
+//        while(helper.parent != null) {
+//            
+//        }
+//    }
     
     private int calculateNodeID(int width, int i, int j ) {
         return width*i + j;
@@ -139,10 +148,13 @@ public class GraphNode{
         return ret;
     }
     
+    private String parentToString() {
+        return (this.parent != null) ? String.valueOf(this.parent.getId()) : "null";
+    }
     
     @Override
     public String toString() {
-        return "Id: " + id + " BlockValue: " + blockValue + " Pos: (" + pos[0] + "," + pos[1] + ") Neighbors: " + neighborsAmount + " Neighbors: " + neighborsToString();
+        return "Id: " + id + " BlockValue: " + blockValue + " Pos: (" + pos[0] + "," + pos[1] + ") f,g,parent:" + this.f + " " + this.g + " " + this.parentToString() + " " + " Neighbors: " + neighborsAmount + " Neighbors: " + neighborsToString();
     }
 
 }

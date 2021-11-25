@@ -31,8 +31,7 @@ public class Map {
     private static final String COLOR_PURPLE = "\u001B[35m"; // Pinky's color
     private static final String COLOR_BLUE = "\u001B[34m"; // Dead Ghost
     private static final String COLOR_WHITE = "\u001B[37m"; // Reseting Ghost
-    
-    private static final String BACKGROUND_COLOR_RED = "\u001B[41m";
+
     
     
     public Map(String levelName) {
@@ -137,7 +136,7 @@ public class Map {
             case 29 -> System.out.print(buffer + COLOR_WHITE + "⚫ " + COLOR_RESET);
         }
         if(value >= 100) {
-            System.out.print(COLOR_RED + "▲ " + COLOR_RESET);
+            System.out.print(COLOR_WHITE + "▲ " + COLOR_RESET);
         }
     }
     

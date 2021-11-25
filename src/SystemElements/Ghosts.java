@@ -12,6 +12,8 @@ public class Ghosts extends Movement{
     protected boolean status;
     protected Points points;
     protected int previousElementValue;
+    protected int previousGraphNodeId;
+    protected int previousGraphNodeBlockValue;
     
     private static final int EATABLE_GHOST = 23;
     private static final int RESETING_GHOST = 29;
@@ -34,6 +36,8 @@ public class Ghosts extends Movement{
         else 
             //Power is off
             this.elementValue = this.previousElementValue;
-        updateOnMap();
+        
+        
+        this.map.setValueAtMap(this.elementValue, this.gn.getPos());
     }
 }
