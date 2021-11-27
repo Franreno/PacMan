@@ -6,28 +6,36 @@ import Engine.Graph;
 import Engine.GraphNode;
 
 /**
- *
- * @author franreno
+ * Classe que representa os atributos e metodos para o Pacman.
+ * @author Francisco Reis Nogueira - 11954374
  */
 public class PacMan extends Movement{
-
-    private boolean powerStatus;
-    private boolean alive;
-    private int lifes;
-    private Points points;
-    private GraphNode previousNode;
     
     /**
-     *
-     * @param G
-     * @param m
-     * @param p
+     * Quantidade de vidas do Pacman.
+     */
+    private int lifes;
+    
+    /**
+     * Checa o atual status do Pacman.
+     */
+    private boolean alive;
+    
+    /**
+     * Sistema de pontos para o Pacman.
+     */
+    private Points points;
+    
+    /**
+     * Construtor da classe Pacman.
+     * @param G Grafo referente ao jogo.
+     * @param m Mapa referente ao jogo.
+     * @param p Sistema de pontos do jogo.
      */
     public PacMan(Graph G, Map m, Points p) {
         super(G,m);
-        this.powerStatus = false;
-        this.alive = true;
         this.lifes = 3;
+        this.alive = true;
         this.points = p;
         this.elementValue = 10;
         setVelocity(0,0);
@@ -35,15 +43,14 @@ public class PacMan extends Movement{
     }
     
     /**
-     *
-     * @return
+     * @return a quantidade de vidas atuais do Pacman.
      */
     public int getLifes() {
         return this.lifes;
     }
         
     /**
-     *
+     * Seleciona uma posicao aleatoria, pelo grafo, para colocar o PacMan no mapa.
      */
     @Override
     protected void setFirstPosition() {
@@ -59,20 +66,9 @@ public class PacMan extends Movement{
         this.pos[1] = _randomPos[1];
         updadtePacManOnMap();
     }
-    
+        
     /**
-     *
-     * @param dVertical
-     * @param dHorizontal
-     */
-    @Override
-    protected void setVelocity(int dVertical, int dHorizontal) {
-        this.dpos[0] = dVertical;
-        this.dpos[1] = dHorizontal;
-    }
-    
-    /**
-     *
+     * Pacman morreu, perde uma vida.
      */
     public void died() {
         this.alive = false;
@@ -80,8 +76,8 @@ public class PacMan extends Movement{
     }
     
     /**
-     *
-     * @param ch
+     * Atualiza a velocidade do pacman (direcao) dependendo da direcao digitada.
+     * @param ch Tipo de movimentacao que o Pacman seguira.
      */
     public void updateVelocity(char ch) {
         switch(ch) {
@@ -102,8 +98,10 @@ public class PacMan extends Movement{
     
     
     /**
-     * @param value
-     * @return
+     * Verfica o que o pacman comeu chama os metodos os pontos para realizar as 
+     * atribuicoes aos pontos.
+     * @param value Valor que foi comido.
+     * @return 0 Para normalidade. Diferente de 0 para algum evento.
      */
     private int checkEatenValue(int value) {
         
@@ -129,8 +127,7 @@ public class PacMan extends Movement{
     }
     
     /**
-     *
-     * @return
+     * Atualiza a posicao do Pacman no mapa de acordo com a sua velocidade.
      */
     private void updatePacManPosition() {
         this.pos[0] += this.dpos[0];
@@ -138,10 +135,13 @@ public class PacMan extends Movement{
     }
     
     /**
-     *
-     * @return
+     * Verifica e atualiza a nova posicao do Pacman no mapa.
+     * @return 0 Para normalidade. Diferente de 0 para algum evento.
      */
     public int updatePacMan() {
+        
+        // Verifica se o Pacman esta com poder ativo, se estiver 
+        // a duracao do poder atual diminui.
         if(this.points.getPowerTimer() != 0)
             this.points.decreasePowerTimer();
         
@@ -149,22 +149,23 @@ public class PacMan extends Movement{
         int nextFrameId = this.map.getWidth() * (this.pos[0] + this.dpos[0]) + (this.pos[1] + this.dpos[1]);
         
         if( this.gn.checkForNeighbor( nextFrameId ) ) {
+            
             int state = updadtePacManOnMap();
             if(state != 0) 
-                return state;
+                return state; 
+            
         }
             
         return 0;
     }
     
     /**
-     *
-     * @return
+     * Atualiza diretamento os grafos e o mapa com as novas posicoes do Pacman.
+     * @return 0 Para normalidade. Diferente de 0 para algum evento.
      */
     private int updadtePacManOnMap() {
+        
         // Limpar o conteudo que existe nesse lugar que o pacman esta.
-        // Onde o pacman esta eh vai ser 0 se o valor de onde ele esta eh 
-        // menor que 10 (menor que alguma entidade)
         this.gn.setBlockValue(0);
         this.G.updateHashMap(this.gn.getId(), this.gn);
         this.map.setValueAtMap(0, this.gn.getPos());

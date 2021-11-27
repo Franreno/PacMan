@@ -23,13 +23,13 @@ public class Graph {
      */
     public HashMap<Integer, GraphNode> hashList;
     /** 
-     * ArrayList de GraphNodes que eh utilizado na busca A*
-     * Guarda os valores que precisam ser verificados
+     * Guarda os valores que precisam ser verificados.
+     * ArrayList de GraphNodes que eh utilizado na busca A*.
      */
     private ArrayList<GraphNode> openList;
     /**
-     * ArrayList de GraphNodes que eh utilizado na busca A*
-     * Guarda os valores que ja foram verificados
+     * Guarda os valores que ja foram verificados.
+     * ArrayList de GraphNodes que eh utilizado na busca A*.
      */
     private ArrayList<GraphNode> closedList;
     
@@ -38,19 +38,27 @@ public class Graph {
      * @param m Objeto do mapa que eh utilizado para construir o grafo
      */
     public Graph(Map m) {
+        
         hashList = new HashMap<>();
         numVertices = 0;
+        
+        // Percorre a matriz do mapa para adicionar os nodulos.
         int[][] data = m.getData();
-        for(int i=0; i<m.getHeight(); i++) {
-            for(int j=0; j<m.getWidth(); j++) {
-                                
-                if(data[i][j] != 4 && data[i][j] != 6) {
+        int height = m.getHeight();
+        int width = m.getWidth();
+        for(int i=0; i<height; i++) {
+            for(int j=0; j<width; j++) {
+                
+                // So adiciona se for um lugar valido.
+                if(data[i][j] != m.WALL && data[i][j] != m.VOID) {
                     
-                    int thisNodeId = (m.getWidth() * i + j);
+                    int thisNodeId = (width * i + j);
                     
+                    // Novo nodulo
                     GraphNode node = new GraphNode( thisNodeId, data[i][j], i, j , m);
-                    node.calculateNeighbors(m, i, j);
                     node.lookForSurroudings(m, i, j);
+                                        
+                    //Coloca o novo nodulo no Map
                     hashList.put(thisNodeId, node);
                     numVertices++;
                 }
@@ -60,16 +68,17 @@ public class Graph {
     }
     
     /**
-     *
-     * @return
+     * Metodo get para a quantidade de vertices do grafo.
+     * @return Quantidade de vertices do grafo
      */
     public int getNumVertices() {
         return this.numVertices;
     }
     
     /**
-     *
-     * @return
+     * Metodo que pega um nodulo aleatorio a partir da selecao de uma chave
+     * por meio de uma lista dessas chaves do Map.
+     * @return Um Nodulo aleatorio do grafo a partir do Map.
      */
     public GraphNode getRandomGraphNode() {
         ArrayList<Integer> keys = new ArrayList(this.hashList.keySet());
@@ -78,34 +87,33 @@ public class Graph {
     }
 
     /**
-     *
-     * @param index
-     * @return
+     * Metodo para pegar um nodulo do grafo.
+     * @param index Chave correspondente a um nodulo no grafo.
+     * @return Um objeto GraphNode. Null caso a chave nao corresponda a algum nodulo.
      */
     public GraphNode getGraphNode(int index) {
         GraphNode gn = this.hashList.get(index);
         if (gn == null)
             return null;
-        else if(gn.getBlockValue() == 4 || gn.getBlockValue() == 6) 
-            return null;
-        else
-            return gn;
+
+        return gn;
     }
     
     /**
-     *
-     * @param key
-     * @param gn
+     * Atualiza um nodulo do Grafo com novas informacoes.
+     * @param key Chave correspondente ao nodulo que sera alterado.
+     * @param gn Objeto GraphNode que substituira o conteudo antigo.
      */
     public void updateHashMap(int key, GraphNode gn) {
         this.hashList.replace(key, gn);
     }
     
     /**
-     * 
-     * @param pos
-     * @param goal
-     * @return
+     * Distancia heuristica para o metodo A* (A_Star).
+     * Eh utilizada a distancia de Manhattan.
+     * @param pos Posicao de origem do nodulo.
+     * @param goal Objetivo do metodo.
+     * @return Distancia de um nodulo x para o objetivo final do metodo A*.
      */
     private int h(int[] pos, int[] goal) {
         //Manhattan Distance
@@ -115,40 +123,53 @@ public class Graph {
     }
         
     /**
-     *
-     * @param start
-     * @param goal
-     * @return
+     * Implementacao do metodo A* para o pathfinding para que o fantasma 
+     * encontre o Pacman.
+     * @param start Nodulo de comeco (Posicao do fantasma).
+     * @param goal Nodulo de chegada (Posicao do Pacman).
      */
-    public GraphNode A_Star(GraphNode start, GraphNode goal) {
+    public void A_Star(GraphNode start, GraphNode goal) {
         this.openList = new ArrayList<>();
         this.closedList = new ArrayList<>();
 
         GraphNode current = start;
         current.g = 0;
         current.f = current.g + h(current.getPos(), goal.getPos());
+        
+        // Enquanto o nodulo atual nao for igual ao nodulo de destino.
         while(current.getId() != goal.getId()) {
             
+            // Distancia do nodulo atual + 1.
+            // Cada nodulo tem distancia 1 de seu vizinho
             int gScore = current.g + 1;
             
+            // Itera por cada vizinho no nodulo atual
             for(GraphNode neighbor : current.getList()) {
+                // Pega os nodulos diretamente do Map e faz alteracoes neles
                 GraphNode adj = this.hashList.get(neighbor.getId());
                 
+                // Se o nodulo nao estiver em nenhuma das listas
                 if( ( !closedList.contains(adj) ) && (!openList.contains( adj )) ) {
+                    // Adiciona o nodulo atual na lista dos possiveis a ser verificados
                     openList.add(this.hashList.get(adj.getId()));
+                    
+                    // Calcula o gScore e fScore desse nodulo
                     adj.g = gScore;
                     int fScore = adj.g + h(adj.getPos(), goal.getPos());
                     
+                    // Verifica se o fScore desse nodulo eh menor que o previamente calculado
+                    // (Valor default de g e f eh 10000).
                     if(fScore < adj.f) {
                         adj.f = fScore;
-                        adj.parent = current;
+                        adj.parent = current; //Melhor opcao
                     }
                 }
             }
             
+            // Adicionar o nodulo atual na lista dos ja vistos
             closedList.add(this.hashList.get(current.getId()));
             
-            //Find lowest f value from openList
+            // Pega o menor valor de f da openList
             int lowest = 10000;
             int indexStorage = 0;
             for(int i=0; i<openList.size(); i++) {
@@ -159,17 +180,17 @@ public class Graph {
                 }
             }
             
-            //Lowest value in list is found at indexStorage
+            // O nodulo que possui o menor f eh selecionado como atual 
+            // E eh removido da lista aberta
             current = openList.get(indexStorage); 
             openList.remove(indexStorage);
         }
-        
-        
-        return current;
     }
     
     /**
-     *
+     * Limpa o conteudo das listas abertas e fechadas.
+     * Os nodulos devem ser limpados para que a proxima execucao do algoritmo
+     * ocorra sem nenhum problema
      */
     public void clearContentOfLists() {
         for(GraphNode helper : this.openList) {
@@ -178,7 +199,6 @@ public class Graph {
             helper.parent = null;
         }
         for(GraphNode helper : this.closedList) {
-//            System.out.println("Id: " + helper.getId() + " f: " + helper.f + " g: " + helper.g + " parent: " + helper.parent);
             helper.f = 10000;
             helper.g = 10000;
             helper.parent = null;
@@ -186,8 +206,8 @@ public class Graph {
     }
     
     /**
-     *
-     * @return
+     * 
+     * @return O conteudo do grafo ordenado pelas chaves
      */
     @Override
     public String toString() {
@@ -195,9 +215,9 @@ public class Graph {
         ArrayList<Integer> sortedKeys = new ArrayList(hashList.keySet());
         Collections.sort(sortedKeys);
         
-        for( Integer key : sortedKeys ) {
-            GraphNode gn = hashList.get(key);
-            ret += "{ " + key + ": " + gn.toString() + " }\n";
+        for (Integer key : sortedKeys) {
+            GraphNode node = hashList.get(key);
+            ret += "{ " + key + ": " + node.toString() + " }\n";
         }
         return ret;
     }
