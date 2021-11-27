@@ -4,34 +4,54 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.PriorityQueue;
 
 /**
- *
- * @author franreno
+ * Classe que contem todo os metodos e atributos do Grafo.
+ * O grafo contem nodulos de todas as posicoes do mapa que sao andaveis
+ * para o Pacman e para os fantasmas.
+ * 
+ * @author Francisco Reis Nogueira - 11954374
  */
 public class Graph {
+    /**
+     * Numero de vertices do grafo.
+     */
     private int numVertices;
+    /**
+     * Map que contem os valores dos nodulos.
+     * O Map eh composto pelo Id do nodulo e pelo objeto (GraphNode).
+     */
     public HashMap<Integer, GraphNode> hashList;
+    /** 
+     * ArrayList de GraphNodes que eh utilizado na busca A*
+     * Guarda os valores que precisam ser verificados
+     */
     private ArrayList<GraphNode> openList;
+    /**
+     * ArrayList de GraphNodes que eh utilizado na busca A*
+     * Guarda os valores que ja foram verificados
+     */
     private ArrayList<GraphNode> closedList;
     
-    
-    public Graph(Map e) {
+    /**
+     * Metodo construtor do grafo.
+     * @param m Objeto do mapa que eh utilizado para construir o grafo
+     */
+    public Graph(Map m) {
         hashList = new HashMap<>();
         numVertices = 0;
-        int[][] data = e.getData();
-        for(int i=0; i<e.getHeight(); i++) {
-            for(int j=0; j<e.getWidth(); j++) {
+        int[][] data = m.getData();
+        for(int i=0; i<m.getHeight(); i++) {
+            for(int j=0; j<m.getWidth(); j++) {
                                 
                 if(data[i][j] != 4 && data[i][j] != 6) {
                     
-                    int thisNodeId = (e.getWidth() * i + j);
+                    int thisNodeId = (m.getWidth() * i + j);
                     
-                    GraphNode gn = new GraphNode( thisNodeId, data[i][j], i, j , e);
-                    gn.calculateNeighbors(e, i, j);
-                    gn.lookForSurroudings(e, i, j);
-                    hashList.put(thisNodeId, gn);
+                    GraphNode node = new GraphNode( thisNodeId, data[i][j], i, j , m);
+                    node.calculateNeighbors(m, i, j);
+                    node.lookForSurroudings(m, i, j);
+                    hashList.put(thisNodeId, node);
                     numVertices++;
                 }
                 
@@ -39,16 +59,29 @@ public class Graph {
         }
     }
     
+    /**
+     *
+     * @return
+     */
     public int getNumVertices() {
         return this.numVertices;
     }
     
+    /**
+     *
+     * @return
+     */
     public GraphNode getRandomGraphNode() {
         ArrayList<Integer> keys = new ArrayList(this.hashList.keySet());
         Random rand = new Random();
         return this.hashList.get( keys.get(rand.nextInt(keys.size()) ));
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public GraphNode getGraphNode(int index) {
         GraphNode gn = this.hashList.get(index);
         if (gn == null)
@@ -59,11 +92,21 @@ public class Graph {
             return gn;
     }
     
-    
+    /**
+     *
+     * @param key
+     * @param gn
+     */
     public void updateHashMap(int key, GraphNode gn) {
         this.hashList.replace(key, gn);
     }
-        
+    
+    /**
+     * 
+     * @param pos
+     * @param goal
+     * @return
+     */
     private int h(int[] pos, int[] goal) {
         //Manhattan Distance
         int dx = Math.abs( pos[0] - goal[0] );
@@ -71,6 +114,12 @@ public class Graph {
         return (dx + dy);
     }
         
+    /**
+     *
+     * @param start
+     * @param goal
+     * @return
+     */
     public GraphNode A_Star(GraphNode start, GraphNode goal) {
         this.openList = new ArrayList<>();
         this.closedList = new ArrayList<>();
@@ -119,7 +168,9 @@ public class Graph {
         return current;
     }
     
-    
+    /**
+     *
+     */
     public void clearContentOfLists() {
         for(GraphNode helper : this.openList) {
             helper.f = 10000;
@@ -134,7 +185,10 @@ public class Graph {
         }
     }
     
-    
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         String ret = "";

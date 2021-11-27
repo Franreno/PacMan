@@ -56,15 +56,6 @@ public class GraphNode{
         return this.list.stream().anyMatch(gn -> (gn.getId() == id));
     }
     
-//    public void cleanAllThisParentNodes() {
-//        if(this.parent == null)
-//            return;
-//        
-//        GraphNode helper = this.parent;
-//        while(helper.parent != null) {
-//            
-//        }
-//    }
     
     private int calculateNodeID(int width, int i, int j ) {
         return width*i + j;

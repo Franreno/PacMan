@@ -17,6 +17,12 @@ public class PacMan extends Movement{
     private Points points;
     private GraphNode previousNode;
     
+    /**
+     *
+     * @param G
+     * @param m
+     * @param p
+     */
     public PacMan(Graph G, Map m, Points p) {
         super(G,m);
         this.powerStatus = false;
@@ -27,7 +33,18 @@ public class PacMan extends Movement{
         setVelocity(0,0);
         setFirstPosition();
     }
+    
+    /**
+     *
+     * @return
+     */
+    public int getLifes() {
+        return this.lifes;
+    }
         
+    /**
+     *
+     */
     @Override
     protected void setFirstPosition() {
         boolean flag = false;
@@ -43,12 +60,29 @@ public class PacMan extends Movement{
         updadtePacManOnMap();
     }
     
+    /**
+     *
+     * @param dVertical
+     * @param dHorizontal
+     */
     @Override
     protected void setVelocity(int dVertical, int dHorizontal) {
         this.dpos[0] = dVertical;
         this.dpos[1] = dHorizontal;
     }
     
+    /**
+     *
+     */
+    public void died() {
+        this.alive = false;
+        this.lifes--;
+    }
+    
+    /**
+     *
+     * @param ch
+     */
     public void updateVelocity(char ch) {
         switch(ch) {
             case 'w' -> {
@@ -66,38 +100,68 @@ public class PacMan extends Movement{
         }
     }
     
-    private void checkEatenValue(int value) {
+    
+    /**
+     * @param value
+     * @return
+     */
+    private int checkEatenValue(int value) {
+        
+        // Checagem necessaria por conta do caminho
+        // que o fantasma vai seguir.
         if(value >= 100) 
             value -=100;
         
         switch(value) {
-            // Ate normal Food
+            // Comi normal
             case 1 -> this.points.hasEaten(1);
-            // Ate super food
+            // Comi super
             case 2 -> this.points.hasEaten(2);
-            // Ate fruit
+            // Comi fruta
             case 3 -> this.points.hasEaten(3);
         }
+        
+        // Tocou ou comeu algum fantasma
+        if(value > 10) 
+            return 1;
+        
+        return 0; 
     }
     
-    
+    /**
+     *
+     * @return
+     */
     private void updatePacManPosition() {
         this.pos[0] += this.dpos[0];
         this.pos[1] += this.dpos[1];
     }
     
-    public void updatePacMan() {
+    /**
+     *
+     * @return
+     */
+    public int updatePacMan() {
         if(this.points.getPowerTimer() != 0)
             this.points.decreasePowerTimer();
         
         // Verificar se a nova posicao existe na lista de vizinhos
         int nextFrameId = this.map.getWidth() * (this.pos[0] + this.dpos[0]) + (this.pos[1] + this.dpos[1]);
-        if( this.gn.checkForNeighbor( nextFrameId ) )
-            updadtePacManOnMap();
+        
+        if( this.gn.checkForNeighbor( nextFrameId ) ) {
+            int state = updadtePacManOnMap();
+            if(state != 0) 
+                return state;
+        }
+            
+        return 0;
     }
     
-    
-    private void updadtePacManOnMap() {
+    /**
+     *
+     * @return
+     */
+    private int updadtePacManOnMap() {
         // Limpar o conteudo que existe nesse lugar que o pacman esta.
         // Onde o pacman esta eh vai ser 0 se o valor de onde ele esta eh 
         // menor que 10 (menor que alguma entidade)
@@ -111,11 +175,16 @@ public class PacMan extends Movement{
         this.gn = this.G.getGraphNode( this.map.getWidth() * this.pos[0] + this.pos[1] );
         
         // Verificar o que o PacMan comeu
-        checkEatenValue(this.gn.getBlockValue());
+        int ateStatus = checkEatenValue(this.gn.getBlockValue());
+        
+        if(ateStatus != 0)
+            return ateStatus;
         
         // Atualizar o mapa e o Grafo
         this.gn.setBlockValue(this.elementValue);
         this.G.updateHashMap(this.gn.getId(), this.gn);
         this.map.setValueAtMap(this.elementValue, this.gn.getPos());
+        
+        return 0;
     }
 }

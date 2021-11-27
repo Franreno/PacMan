@@ -57,7 +57,7 @@ public class Points {
         this.points += 100 + (200 * (this.level -1));
     }
     
-    private void ateGhost() {
+    public void ateGhost() {
         this.ghostsEaten++;
         this.points += 100 * Math.pow(2, this.ghostsEaten);
         

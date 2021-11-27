@@ -22,10 +22,11 @@ public class Blinky extends Ghosts{
         this.elementValue = 11;
         this.previousElementValue = this.elementValue;
         this.totalPath = new ArrayList<>();
+        
         setFirstPosition();
         
-//        this.previousGraphNodeBlockValue = this.gn.getBlockValue();
         this.previousGraphNodeBlockValue = this.gn.getBlockValue();
+        
         this.gn.setBlockValue(this.elementValue);
         this.G.updateHashMap(this.gn.getId(), this.gn);
         
@@ -40,14 +41,10 @@ public class Blinky extends Ghosts{
         // nao pintar o pacman e o fantasma.
         ArrayList<Integer> separatedInstance = new ArrayList<>(this.totalPath);
         
-        
-        
         separatedInstance.remove(0);
         if(separatedInstance.size() > 0)
             separatedInstance.remove(separatedInstance.size() -1);
         
-        System.out.println(separatedInstance);
-        System.out.println(this.totalPath);
         
         for(Integer e : separatedInstance) {
             GraphNode gn = this.G.getGraphNode(e);
@@ -84,19 +81,22 @@ public class Blinky extends Ghosts{
     public void pathfindPacMan(GraphNode goal) {
         if( (!this.totalPath.isEmpty()) ) {
             clearPath();
+            if(this.totalPath.size() == 2) {
+                System.out.println("Entrei aqui");
+                this.totalPath.clear();
+                return;
+            }
             this.totalPath.clear();
         }
         
-        System.out.println("Estou mandando o caminho: " + this.gn);
+        if(this.gn.getBlockValue() == goal.getBlockValue()) {
+            System.out.println("Funcionou aqui");
+            return;
+        }
+        
+        
         GraphNode path = this.G.A_Star(this.gn, goal);
-
-//        System.out.println(this.G.toString());
-//
-//        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------------------------------------------\n----------------------------------------------------------------------------------------------------------------------------------------");
-//       
-//        System.out.println(this.G.toString());
-
-        System.out.print("Estou criando a lista -> " + this.totalPath);
+        
         while(path.parent != null) {
             this.totalPath.add(path.getId());
             path = path.parent;
@@ -104,51 +104,56 @@ public class Blinky extends Ghosts{
 
         this.totalPath.add(path.getId());
         Collections.reverse(totalPath);
-
-        System.out.println("  Criei a lista: " + this.totalPath);
-        
         paintPath();        
     }
     
     private void updatePositionOnMap() {
         //Ir para a primeira posicao do totalPath
-        if(this.totalPath.isEmpty()) 
-            return;
         
-        System.out.println("Anterior: " + this.gn + "ValorElementoAnterior: " + this.previousElementValue);
+//        if(this.totalPath.isEmpty()) 
+//            return;
+        
         int nodeValue = this.totalPath.get(1);
         
         GraphNode newNode = this.G.getGraphNode(nodeValue);
+        
         int newValue = newNode.getBlockValue();
         if(newValue >= 100)
             newValue -=100;
-        this.previousElementValue = newValue;
-        this.gn = newNode;
         
-        System.out.println("Atual: " + this.gn + "ValorElementoAnterior: " + this.previousElementValue);
+        this.previousGraphNodeBlockValue = newValue;
+        this.gn = newNode;
         
         this.gn.setBlockValue(this.elementValue);
         this.G.updateHashMap(this.gn.getId(), this.gn);    
     }
     
-    @Override
-    public void updateOnMap() {
+    public int updateOnMap(GraphNode goal) {
         //Limpar a posicao atual.
-        System.out.println("Estou setando a posicao: (" + this.gn.getPos()[0] + "," + this.gn.getPos()[1] + ") Com o valor Anterior: " + this.previousElementValue );
-        this.map.setValueAtMap(this.previousElementValue, this.gn.getPos());
+        
+        
+        this.map.setValueAtMap(this.previousGraphNodeBlockValue, this.gn.getPos());
         
         //Voltar o valor anterior do node para ele
-        this.gn.setBlockValue(this.previousElementValue);
+        this.gn.setBlockValue(this.previousGraphNodeBlockValue);
         this.G.updateHashMap(this.gn.getId(), this.gn);
+
+        // Verificar localizacao do pacman.
+        // Olhar nos vizinhos do node atual
+        if( this.gn.checkForNeighbor(goal.getId()) ) {
+            return -1;
+        }else {
+            pathfindPacMan(goal);
+        }
         
         // Ir para o proximo node.
         updatePositionOnMap();
+        hasPacManEatenPallet();
         
-        // O VALOR DO THIS.ELEMENTVALUE TA MUDANDO
-        // ELE TA SE TORNANDO O MESMO VALOR QUE O PREVIOUSELEMENTVALUE!!!
-        
-        System.out.println("Estou setando a posicao: (" + this.gn.getPos()[0] + "," + this.gn.getPos()[1] + ") Com o valor do elemento: " + this.elementValue );
+        // Colocar blinky nessa nova posicao
         this.map.setValueAtMap(this.elementValue, this.gn.getPos());
+        
+        return 0;
     }
     
 }
