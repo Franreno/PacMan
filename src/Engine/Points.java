@@ -119,7 +119,7 @@ public class Points {
 
     /**
      * Metodo que seleciona o tipo de elemento que foi comido pelo PacMan.
-     * @param type
+     * @param type tipo de comida que o Pacman comeu
      */
     public void hasEaten(int type) {
         switch(type) {
