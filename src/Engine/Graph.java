@@ -21,7 +21,7 @@ public class Graph {
      * Map que contem os valores dos nodulos.
      * O Map eh composto pelo Id do nodulo e pelo objeto (GraphNode).
      */
-    public HashMap<Integer, GraphNode> hashList;
+    private HashMap<Integer, GraphNode> hashList;
     /** 
      * Guarda os valores que precisam ser verificados.
      * ArrayList de GraphNodes que eh utilizado na busca A*.
@@ -121,7 +121,7 @@ public class Graph {
         int dy = Math.abs( pos[1] - goal[1] );
         return (dx + dy);
     }
-        
+    
     /**
      * Implementacao do metodo A* para o pathfinding para que o fantasma 
      * encontre o Pacman.

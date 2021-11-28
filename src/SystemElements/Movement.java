@@ -2,7 +2,7 @@ package SystemElements;
 import Engine.Map;
 import Engine.Graph;
 import Engine.GraphNode;
-import java.util.Random;
+import Engine.Points;
 
 /**
  * Classe geral que representa todo elemento que se move no mapa.
@@ -22,7 +22,13 @@ public class Movement {
     /**
      * Mapa referente ao jogo. Utilizado para a movimentacao dos elementos.
      */
-    public Map map;
+    protected Map map;
+    
+    /**
+     * Sistema de pontos para o elemento.
+     */
+    protected Points points;
+    
     
     /**
      * Posicao do elemento na matriz do mapa.
@@ -49,10 +55,12 @@ public class Movement {
      * Construtor da classe.
      * @param _G Grafo referente ao jogo.
      * @param m Mapa referente ao jogo.
+     * @param p Sistema de pontos referente ao jogo.
      */
-    public Movement(Graph _G, Map m) {
+    public Movement(Graph _G, Map m, Points p) {
         this.G = _G;
         this.map = m;
+        this.points = p;
         this.pos = new int[2];
         this.dpos = new int[2];
         this.gn = null;

@@ -20,12 +20,7 @@ public class PacMan extends Movement{
      * Checa o atual status do Pacman.
      */
     private boolean alive;
-    
-    /**
-     * Sistema de pontos para o Pacman.
-     */
-    private Points points;
-    
+        
     /**
      * Construtor da classe Pacman.
      * @param G Grafo referente ao jogo.
@@ -33,10 +28,9 @@ public class PacMan extends Movement{
      * @param p Sistema de pontos do jogo.
      */
     public PacMan(Graph G, Map m, Points p) {
-        super(G,m);
+        super(G,m,p);
         this.lifes = 3;
         this.alive = true;
-        this.points = p;
         this.elementValue = 10;
         setVelocity(0,0);
         setFirstPosition();
@@ -160,7 +154,7 @@ public class PacMan extends Movement{
     }
     
     /**
-     * Atualiza diretamento os grafos e o mapa com as novas posicoes do Pacman.
+     * Atualiza diretamente os grafos e o mapa com as novas posicoes do Pacman.
      * @return 0 Para normalidade. Diferente de 0 para algum evento.
      */
     private int updadtePacManOnMap() {

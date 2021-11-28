@@ -10,7 +10,7 @@ public class Points {
     /**
      * Quantidade de Pac-dots que o Pacman ja comeu.
      */
-    private int ammountEaten;
+    private int amountEaten;
     
     /**
      * Valor total dos pontos do jogo.
@@ -36,7 +36,7 @@ public class Points {
      * Construtor da classe dos pontos.
      */
     public Points() {
-        this.ammountEaten = 0;
+        this.amountEaten = 0;
         this.points = 0;
         this.ghostsEaten = 0;
         this.level = 1;
@@ -53,8 +53,8 @@ public class Points {
     /**
      * @return Quantidade de Pac-dots comidos.
      */
-    public int getAmmountEaten() {
-        return this.ammountEaten;
+    public int getAmountEaten() {
+        return this.amountEaten;
     }
     
     /**
@@ -89,7 +89,7 @@ public class Points {
      * Comeu um Pac-dot.
      */
     private void ateNormalFood() {
-        this.ammountEaten++;
+        this.amountEaten++;
         this.points += 10;
     }
     
@@ -97,7 +97,7 @@ public class Points {
      * Comeu uma Pilula de poder.
      */
     private void ateSuperFood() {
-        this.ammountEaten++;
+        this.amountEaten++;
         this.points += 50;
         this.powerTimer = 20;
     }

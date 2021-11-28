@@ -57,25 +57,67 @@ public class Map {
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4}
     };
     
-    // Map values
+    /**
+     * Valor padrao para o elemento no mapa.
+     */
     public static final int FOOD = 1;
+    /**
+     * Valor padrao para o elemento no mapa.
+     */
     public static final int SUPER_FOOD = 2;
+    /**
+     * Valor padrao para o elemento no mapa.
+     */
     public static final int FRUIT = 3;
+    /**
+     * Valor padrao para o elemento no mapa.
+     */
     public static final int WALL = 4;
+    /**
+     * Valor padrao para o elemento no mapa.
+     */
     public static final int GHOST_CAGE = 5;
+    /**
+     * Valor padrao para o elemento no mapa.
+     */
     public static final int VOID = 6;
     
     
-    // Map Colors
+    
+    /**
+     * String para print com cor.
+     */
     private static final String COLOR_RESET = "\u001B[0m";
+    /**
+     * String para print com cor.
+     */
     private static final String COLOR_YELLOW = "\u001B[33m"; //Pacman's color
+    /**
+     * String para print com cor.
+     */
     private static final String COLOR_RED = "\u001B[31m"; //Blinky's color
+    /**
+     * String para print com cor.
+     */
     private static final String COLOR_GREEN = "\u001B[32m"; // Inky's color
+    /**
+     * String para print com cor.
+     */
     private static final String COLOR_CYAN = "\u001B[36m"; // Clyde's color
+    /**
+     * String para print com cor.
+     */
     private static final String COLOR_PURPLE = "\u001B[35m"; // Pinky's color
+    /**
+     * String para print com cor.
+     */
     private static final String COLOR_BLUE = "\u001B[34m"; // Dead Ghost
+    /**
+     * String para print com cor.
+     */
     private static final String COLOR_WHITE = "\u001B[37m"; // Reseting Ghost
 
+    
     /**
      * @return Altura do mapa.
      */

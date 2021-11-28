@@ -15,11 +15,6 @@ public class Ghosts extends Movement{
     protected boolean status;
     
     /**
-     * Sistema de pontos para verificacao do status do poder do Pacman.
-     */
-    protected Points points;
-    
-    /**
      * Guarda o ultimo valor utilizado na cor do fantasma.
      */
     protected int previousElementValue;
@@ -50,9 +45,8 @@ public class Ghosts extends Movement{
      * @param p Sistema de pontos do jogo.
      */
     public Ghosts(Graph G, Map m, Points p) {
-        super(G,m);
+        super(G,m,p);
         this.status = false;
-        this.points = p;
     }
     
     /**
