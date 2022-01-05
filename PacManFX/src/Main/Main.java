@@ -3,18 +3,16 @@ package Main;
 import Engine.Field;
 import Engine.Graph;
 import Engine.Points;
+import SystemElements.Blinky;
 import SystemElements.PacMan;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 
 import javafx.scene.paint.Color;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -24,6 +22,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -32,6 +33,8 @@ import javafx.util.Duration;
  * @author franreno
  */
 public class Main extends Application {
+    
+    
     
     /**
      * @param args the command line arguments
@@ -52,6 +55,24 @@ public class Main extends Application {
     }
     
     
+    private void redrawLifes(Group root, Image img, int lifes) {
+        for(int i=0; i<lifes; i++) {
+            ImageView imageView = new ImageView( img );
+            imageView.setY( Field.SCREEN_HEIGHT - 5*Field.IMG_SIZE );
+            imageView.setX( (4+i)*Field.IMG_SIZE );
+        
+            root.getChildren().add(imageView);
+        }
+    }
+    
+    
+    private void redrawFruit(Group root, Image img) {
+        ImageView fruitImageView = new ImageView( img );
+        fruitImageView.setY( Field.SCREEN_HEIGHT - 5*Field.IMG_SIZE );
+        fruitImageView.setX( Field.SCREEN_WIDTH - 5*Field.IMG_SIZE );
+        root.getChildren().add(fruitImageView);
+    }
+    
     @Override
     public void start(Stage stage) {
 
@@ -70,7 +91,12 @@ public class Main extends Application {
         
         // Criacao do Pacman.
         PacMan _pacman = new PacMan(_graph, field, systemPoints);
+
+        // Criacao do fantasma blinky.
+        Blinky _blinky = new Blinky(_graph, field, systemPoints);
         
+        // Procura o pacman.
+        _blinky.pathfindPacMan(_pacman.getNode());
         
         int[][] fieldData = field.getData();
         
@@ -82,6 +108,22 @@ public class Main extends Application {
         stage.setResizable(false);
         
         
+        // Criacao do Text Score
+        Text text = new Text("Score: " + systemPoints.getPoints());
+        text.setFill(Color.WHITE);
+        text.setX(Field.SCREEN_WIDTH / 2 - 30);
+        text.setY(3*Field.IMG_SIZE);
+        text.setFont(Font.font("Verdana", FontWeight.NORMAL, 16));
+        root.getChildren().add(text);
+        
+        // Criacao das imagens de vida
+        Image pacmanLifeImage = new Image("assets/Pacman.png", 16, 16, false, false);
+        redrawLifes(root, pacmanLifeImage, _pacman.getLifes());
+        
+        // Criacao da imagem da fruta
+        redrawFruit(root, field.getFruitType(systemPoints.getLevel()));
+        
+        
         stage.setTitle("PacMan");
         stage.setScene(scene);
         stage.show();
@@ -90,28 +132,31 @@ public class Main extends Application {
         redrawMap(root, field, fieldData);
         
         scene.setOnKeyPressed((KeyEvent event) -> {
-            System.out.println(event.getText().charAt(0) );
             _pacman.updateVelocity( event.getText().charAt(0) );
-            _pacman.updatePacMan();            
-            redrawMap(root, field, fieldData);
-        });
+
+        });        
+                
         
-        new Timer().schedule(
-            new TimerTask() {
-                @Override
-                public void run() {
-                    System.out.println("ping");
-                    _pacman.updatePacMan();
-                    redrawMap(root, field, fieldData);
-                }
-            }, 0, 17);
+        Timer timer = new Timer();
         
-//            try {
-//                Thread.sleep(1/60);
-//            } catch (InterruptedException ex) {
-//                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//            }
+        TimerTask timertask = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater( new Runnable() { 
+                    public void run() {
+                        _pacman.updatePacMan();
+                        _blinky.updateOnMap(_pacman.getNode());
+                        redrawMap(root, field, fieldData);
+                        text.setText("Score: " + systemPoints.getPoints());
+                        redrawLifes(root, pacmanLifeImage, _pacman.getLifes());
+                        redrawFruit(root, field.getFruitType(systemPoints.getLevel()));
+                    }
+                });
+            }
+            
+        };
         
-        
+        long frameTime = (long) (1000.0 / 4.0);
+        timer.schedule(timertask, 0, frameTime);
     }
 }

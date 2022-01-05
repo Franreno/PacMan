@@ -64,6 +64,9 @@ public class Points {
         return this.powerTimer;
     }
     
+    
+    public int getLevel() { return this.level; }
+    
     /**
      * Metodo que diminui o tempo do poder do pacman.
      */
@@ -99,7 +102,7 @@ public class Points {
     private void ateSuperFood() {
         this.amountEaten++;
         this.points += 50;
-        this.powerTimer = 20;
+        this.powerTimer = 60;
     }
     
     /**

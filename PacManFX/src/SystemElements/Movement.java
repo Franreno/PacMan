@@ -44,7 +44,7 @@ public class Movement {
      * Acumulacao da velocidade utilizado para elementos cuja velocidade nao eh
      * constante.
      */
-    protected int[] cumulative;
+    protected int[] posOffset;
     
     /**
      * Valor representativo do elemento no mapa.

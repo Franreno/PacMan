@@ -25,16 +25,27 @@ public class Field {
     
     
     
-    private final Image Void = new Image("assets/Void.png");
-    private final Image Wall = new Image("assets/Wall.png");
-    private final Image PowerDot = new Image("assets/Power.png");
-    private final Image PacDot = new Image("assets/PacDot.png");
-    private final Image Cherry = new Image("assets/Cherry.png");
-    private final Image PacMan = new Image("assets/Pacman.png");
+    private final Image VoidImage = new Image("assets/Void.png");
+    private final Image WallImage = new Image("assets/Wall.png");
     
-    private static final int IMG_SIZE = 16;
-    private static final int SCREEN_WIDTH_OFFSET = 2*IMG_SIZE;
-    private static final int SCREEN_HEIGHT_OFFSET = 4*IMG_SIZE;
+    private final Image PowerDotImage = new Image("assets/Power.png");
+    private final Image PacDotImage = new Image("assets/PacDot.png");
+    
+    private final Image CherryImage = new Image("assets/Cherry.png");
+    private final Image StrawberryImage = new Image("assets/Strawberry.png");
+    private final Image OrangeImage = new Image("assets/Orange.png");
+    
+    private final Image PacManImage = new Image("assets/Pacman.gif", 16, 16, false, false);
+    private final Image BlinkyImage = new Image("assets/Blinky.gif", 16, 16, false, false);
+    private final Image PinkyImage = new Image("assets/Pinky.gif", 16, 16, false, false);
+    private final Image ClydeImage = new Image("assets/Clyde.gif", 16, 16, false, false);
+    private final Image InkyImage = new Image("assets/Inky.gif", 16, 16, false, false);
+    private final Image BlueGhostImage = new Image("assets/BlueGhost.gif", 16, 16, false, false);
+    
+    
+    public static final int IMG_SIZE = 16;
+    public static final int SCREEN_WIDTH_OFFSET = 2*IMG_SIZE;
+    public static final int SCREEN_HEIGHT_OFFSET = 4*IMG_SIZE;
     
     
     public static final int SCREEN_WIDTH = 32*IMG_SIZE;
@@ -82,21 +93,31 @@ public class Field {
     private Image getImageFromFieldValue(int value) {
         switch(value) {
             case 0:
-                return this.Void;
+                return this.VoidImage;
             case 1:
-                return this.PacDot;
+                return this.PacDotImage;
             case 2:
-                return this.PowerDot;
+                return this.PowerDotImage;
             case 3:
-                return this.Cherry;
+                return this.CherryImage;
             case 4:
-                return this.Wall;
+                return this.WallImage;
             case 5:
-                return this.Void;
+                return this.VoidImage;
             case 6:
-                return this.Void;
+                return this.VoidImage;
             case 10:
-                return this.PacMan;
+                return this.PacManImage;
+            case 11:
+                return this.BlinkyImage;
+            case 13:
+                return this.InkyImage;
+            case 17:
+                return this.PinkyImage;
+            case 19:
+                return this.ClydeImage;
+            case 23:
+                return this.BlueGhostImage;
         }
         
         return null;
@@ -105,8 +126,9 @@ public class Field {
     public void drawAtStage(Group root, int fieldValue, int row, int column) {
         
         ImageView imageView = new ImageView( getImageFromFieldValue(fieldValue) );
-        imageView.setY(row*IMG_SIZE + SCREEN_HEIGHT_OFFSET);
-        imageView.setX(column*IMG_SIZE + SCREEN_WIDTH_OFFSET);
+        imageView.setY( row*IMG_SIZE + SCREEN_HEIGHT_OFFSET);
+        imageView.setX( column*IMG_SIZE + SCREEN_WIDTH_OFFSET);
+        
         root.getChildren().add(imageView);
     }
     
@@ -161,5 +183,19 @@ public class Field {
         
         this.mapData[heightPosition][widthPosition] = updateValue;
         
+    }
+    
+    
+    public Image getFruitType(int level) {
+        switch (level) {
+            case 1:
+                return this.CherryImage;
+            case 2:
+                return this.StrawberryImage;
+            case 3:
+                return this.OrangeImage;
+        }
+        
+        return null;
     }
 }

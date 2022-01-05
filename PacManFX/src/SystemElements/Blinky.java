@@ -53,57 +53,6 @@ public class Blinky extends Ghosts{
         this.map.setValueAtMap(this.elementValue, this.gn.getPos());
     }
     
-    /**
-     * Muda os valores dos nodulos e da matriz do mapa para que ocorra a impressao
-     * do caminho que blinky ira seguir.
-     */
-    private void paintPath() {
-        if(this.totalPath == null || this.totalPath.isEmpty())
-            return;
-        
-        // Nao pintar o pacman e o blinky.
-        ArrayList<Integer> separatedInstance = new ArrayList<>(this.totalPath);
-        
-        separatedInstance.remove(0);
-        if(separatedInstance.size() > 0)
-            separatedInstance.remove(separatedInstance.size() -1);
-        
-        for(Integer e : separatedInstance) {
-            GraphNode node = this.G.getGraphNode(e);
-            int blockValue = node.getBlockValue();
-            
-            // So pinta se o valor nao for de algum outro fantasma.
-            if(blockValue < 10) {
-                // Coloca o valor do bloco atual + 100.
-                node.setBlockValue(blockValue + 100);
-                this.G.updateHashMap(e, node);
-                this.map.setValueAtMap(blockValue + 100, node.getPos());
-            }
-        }
-    }
-    
-    /**
-     * Limpa os valores que foram realizados da ultima iteracao.
-     */
-    private void clearPath() {
-        if(this.totalPath == null || this.totalPath.isEmpty())
-            return;
-
-        // Limpa as listas abertas e fechadas do grafo.
-        this.G.clearContentOfLists();
-        
-        for(Integer e : this.totalPath) {
-            GraphNode node = this.G.getGraphNode(e);
-            int blockValue = node.getBlockValue();
-            
-            // Retorna os valores previamente atribuidos para o caminho.
-            if(blockValue >= 100 && blockValue != 11)
-                blockValue -= 100;
-            node.setBlockValue(blockValue);
-            this.G.updateHashMap(e, node);
-            this.map.setValueAtMap(blockValue, node.getPos());
-        }
-    }
     
     /**
      *  Realiza a procura pelo Pacman utilizando o algoritmo A* 
@@ -114,7 +63,7 @@ public class Blinky extends Ghosts{
         // Se a lista nao estiver vazia na nova interacao eh pq precisa
         // limpar a lista, os nodulos e o caminho utilizados na ultima iteracao
         if( (!this.totalPath.isEmpty()) ) {
-            clearPath();
+            this.G.clearContentOfLists();
             
             if(this.totalPath.size() == 2) {
                 this.totalPath.clear();
@@ -140,9 +89,6 @@ public class Blinky extends Ghosts{
 
         this.totalPath.add(goal.getId());
         Collections.reverse(totalPath); // goal -> start. vai para start -> goal
-
-        // Mudar os valores no mapa pelo caminho utilizado.
-        paintPath();        
     }
     
     /**
