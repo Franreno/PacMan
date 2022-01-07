@@ -41,6 +41,7 @@ public class Field {
     private final Image ClydeImage = new Image("assets/Clyde.gif", 16, 16, false, false);
     private final Image InkyImage = new Image("assets/Inky.gif", 16, 16, false, false);
     private final Image BlueGhostImage = new Image("assets/BlueGhost.gif", 16, 16, false, false);
+    private final Image ResetingGhostImage = new Image("assets/ResetingGhost.gif", 16, 16, false, false);
     
     
     public static final int IMG_SIZE = 16;
@@ -118,6 +119,8 @@ public class Field {
                 return this.ClydeImage;
             case 23:
                 return this.BlueGhostImage;
+            case 29:
+                return this.ResetingGhostImage;
         }
         
         return null;

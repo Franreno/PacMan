@@ -41,10 +41,16 @@ public class Movement {
     protected int[] dpos;
     
     /**
-     * Acumulacao da velocidade utilizado para elementos cuja velocidade nao eh
-     * constante.
+     * Quantidade de frames que o elemento deve esperar ate realizar o proximo movimento.
      */
-    protected int[] posOffset;
+    protected int frameDelay;
+    
+    
+    /**
+     * Acumulador de quantos frames ja se passaram.
+     */
+    protected int framesPlayed;
+    
     
     /**
      * Valor representativo do elemento no mapa.
@@ -52,7 +58,7 @@ public class Movement {
     protected int elementValue;
     
     /**
-     * Construtor da classe.
+     * Construtor da classe.posOffset
      * @param _G Grafo referente ao jogo.
      * @param m Mapa referente ao jogo.
      * @param p Sistema de pontos referente ao jogo.
