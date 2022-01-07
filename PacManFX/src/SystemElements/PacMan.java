@@ -143,7 +143,7 @@ public class PacMan extends Movement{
      * Verifica e atualiza a nova posicao do Pacman no mapa.
      * @return 0 Para normalidade. Diferente de 0 para algum evento.
      */
-    public int updatePacMan() {
+    public int update() {
         
         // Verifica se o Pacman esta com poder ativo, se estiver 
         // a duracao do poder atual diminui.
@@ -172,6 +172,7 @@ public class PacMan extends Movement{
         
         // Limpar o conteudo que existe nesse lugar que o pacman esta.
         this.gn.setBlockValue(0);
+        this.gn.setOriginalBlockValue(0);
         this.G.updateHashMap(this.gn.getId(), this.gn);
         this.map.setValueAtMap(0, this.gn.getPos());
         

@@ -32,11 +32,20 @@ public class Points {
      */
     private int powerTimer;
     
+    private int amountEatenThreshold;
+    
+    private int fruitApperedXTimes;
+    
+    private final int fruitNodeID = 658;
+    
+    
     /**
      * Construtor da classe dos pontos.
      */
     public Points() {
         this.amountEaten = 0;
+        this.amountEatenThreshold = 70;
+        this.fruitApperedXTimes = 0;
         this.points = 0;
         this.ghostsEaten = 0;
         this.level = 1;
@@ -66,6 +75,8 @@ public class Points {
     
     
     public int getLevel() { return this.level; }
+    
+    public int getFruitNodeID() { return this.fruitNodeID; }
     
     /**
      * Metodo que diminui o tempo do poder do pacman.
@@ -137,5 +148,16 @@ public class Points {
                 ateFruit();
                 break;
         }
+    }
+    
+    
+    public boolean checkAmountEaten() {
+        if( this.fruitApperedXTimes < 2 && this.amountEaten >= this.amountEatenThreshold ) {
+            this.amountEatenThreshold += 30;
+            this.fruitApperedXTimes++;
+            return true;
+        }
+        
+        return false;
     }
 }

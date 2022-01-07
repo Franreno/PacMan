@@ -18,6 +18,8 @@ public class GraphNode{
      */
     private int blockValue;
     
+    private int originalBlockValue;
+    
     /**
      * Valor i,j correspondente a matriz do mapa.
      * pos[0] -> linha;
@@ -61,6 +63,7 @@ public class GraphNode{
     public GraphNode(int _id, int _blockValue, int i, int j, Field m) {
         this.id = _id;
         this.blockValue = _blockValue;
+        this.originalBlockValue = blockValue;
         this.pos = new int[2];
         this.pos[0] = i;
         this.pos[1] = j;
@@ -81,6 +84,9 @@ public class GraphNode{
     public int getBlockValue() {
         return this.blockValue;
     }
+    
+    
+    public int getOriginalBlockValue() { return this.originalBlockValue; }
     
     /**
      * @return Posicao do nodulo no mapa.
@@ -109,6 +115,10 @@ public class GraphNode{
      */
     public void setBlockValue(int value) {
         this.blockValue = value;
+    }
+    
+    public void setOriginalBlockValue(int value) {
+        this.originalBlockValue = value;
     }
     
     /**

@@ -2,9 +2,13 @@ package Main;
 
 import Engine.Field;
 import Engine.Graph;
+import Engine.GraphNode;
 import Engine.Points;
 import SystemElements.Blinky;
+import SystemElements.Clyde;
+import SystemElements.Inky;
 import SystemElements.PacMan;
+import SystemElements.Pinky;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -95,16 +99,24 @@ public class Main extends Application {
         // Criacao do fantasma blinky.
         Blinky _blinky = new Blinky(_graph, field, systemPoints);
         
+        Clyde _clyde = new Clyde(_graph, field, systemPoints);
+        
+        Inky _inky = new Inky(_graph, field, systemPoints);
+        
+        Pinky _pinky = new Pinky(_graph, field, systemPoints);
+        
+        
         // Procura o pacman.
-        _blinky.pathfindPacMan(_pacman.getNode());
+        _blinky.pathFind(_pacman.getNode());
+        _pinky.pathFind(_pacman.getNode());
         
         int[][] fieldData = field.getData();
         
         
         Group root = new Group();
         Scene scene = new Scene(root, Color.BLACK);
-        stage.setWidth(field.SCREEN_WIDTH);
-        stage.setHeight(field.SCREEN_HEIGHT);
+        stage.setWidth(Field.SCREEN_WIDTH);
+        stage.setHeight(Field.SCREEN_HEIGHT);
         stage.setResizable(false);
         
         
@@ -144,8 +156,27 @@ public class Main extends Application {
             public void run() {
                 Platform.runLater( new Runnable() { 
                     public void run() {
-                        _pacman.updatePacMan();
-                        _blinky.updateOnMap(_pacman.getNode());
+                        _pacman.update();
+                        _blinky.update(_pacman.getNode());
+                        _clyde.update();
+                        _inky.update();
+                        _pinky.update(_pacman.getNode());
+                        
+                        if(systemPoints.checkAmountEaten()) {
+                            int fruitNodeID = systemPoints.getFruitNodeID();
+                            GraphNode fruitNode = _graph.getGraphNode(fruitNodeID);
+                            if( field.getValueFromMap(fruitNode.getPos()) == 3 ) {
+                                fruitNode = _graph.getGraphNode(fruitNodeID-1);
+                            }
+                            
+                            fruitNode.setOriginalBlockValue(3);
+                            _graph.updateHashMap(fruitNodeID, fruitNode);
+                            
+                            field.setValueAtMap(3, fruitNode.getPos());
+                        }
+                            
+                        
+                        
                         redrawMap(root, field, fieldData);
                         text.setText("Score: " + systemPoints.getPoints());
                         redrawLifes(root, pacmanLifeImage, _pacman.getLifes());

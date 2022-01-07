@@ -205,6 +205,14 @@ public class Graph {
         }
     }
     
+    public void killAllNodesParentData() {
+        for(GraphNode helper : this.hashList.values()) {
+            helper.f = 10000;
+            helper.g = 10000;
+            helper.parent = null;
+        }
+    }
+    
     /**
      * 
      * @return O conteudo do grafo ordenado pelas chaves
