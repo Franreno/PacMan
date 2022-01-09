@@ -42,6 +42,7 @@ public class Field {
     private final Image InkyImage = new Image("assets/Inky.gif", 16, 16, false, false);
     private final Image BlueGhostImage = new Image("assets/BlueGhost.gif", 16, 16, false, false);
     private final Image ResetingGhostImage = new Image("assets/ResetingGhost.gif", 16, 16, false, false);
+    private final Image DeadGhostImage = new Image("assets/Eyes.png", 16, 16, false, false);
     
     
     public static final int IMG_SIZE = 16;
@@ -89,6 +90,10 @@ public class Field {
         {4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4},
         {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4}
     };
+    //12,14
+    //14,14
+    //14,13
+    //14,15
 
     
     private Image getImageFromFieldValue(int value) {
@@ -117,10 +122,14 @@ public class Field {
                 return this.PinkyImage;
             case 19:
                 return this.ClydeImage;
-            case 23:
-                return this.BlueGhostImage;
-            case 29:
-                return this.ResetingGhostImage;
+            case 31:
+                return this.DeadGhostImage;
+        }
+        
+        if(value >= 111 && value < 211) {
+            return this.BlueGhostImage;
+        } else if(value >= 211) {
+            return this.ResetingGhostImage;
         }
         
         return null;

@@ -20,6 +20,11 @@ public class PacMan extends Movement{
      * Checa o atual status do Pacman.
      */
     private boolean alive;
+    
+    /**
+     * 
+     */
+    private int ghostTypeEaten;
         
     /**
      * Construtor da classe Pacman.
@@ -32,6 +37,7 @@ public class PacMan extends Movement{
         this.lifes = 3;
         this.alive = true;
         this.elementValue = 10;
+        this.ghostTypeEaten = -1;
         setVelocity(0,0);
         setFirstPosition();
     }
@@ -42,6 +48,8 @@ public class PacMan extends Movement{
     public int getLifes() {
         return this.lifes;
     }
+    
+    public int getGhostTypeEaten() { return this.ghostTypeEaten; }
         
     /**
      * Seleciona uma posicao aleatoria, pelo grafo, para colocar o PacMan no mapa.
@@ -100,12 +108,10 @@ public class PacMan extends Movement{
      * @param value Valor que foi comido.
      * @return 0 Para normalidade. Diferente de 0 para algum evento.
      */
-    private int checkEatenValue(int value) {
+    private boolean checkEatenValue(int value) {
+        if(value == 0)
+            return true;
         
-        // Checagem necessaria por conta do caminho
-        // que o fantasma vai seguir.
-        if(value >= 100) 
-            value -=100;
         
         switch(value) {
             // Comi normal
@@ -125,10 +131,13 @@ public class PacMan extends Movement{
         }
         
         // Tocou ou comeu algum fantasma
-        if(value > 10) 
-            return 1;
+        if(value > 10) {
+            this.ghostTypeEaten = value;
+            return false;
+        }
+            
         
-        return 0; 
+        return true; 
     }
     
     /**
@@ -143,7 +152,7 @@ public class PacMan extends Movement{
      * Verifica e atualiza a nova posicao do Pacman no mapa.
      * @return 0 Para normalidade. Diferente de 0 para algum evento.
      */
-    public int update() {
+    public boolean update() {
         
         // Verifica se o Pacman esta com poder ativo, se estiver 
         // a duracao do poder atual diminui.
@@ -155,20 +164,20 @@ public class PacMan extends Movement{
         
         if( this.gn.checkForNeighbor( nextFrameId ) ) {
             
-            int state = updadtePacManOnMap();
-            if(state != 0) 
-                return state; 
+            boolean state = updadtePacManOnMap();
+            if(!state) 
+                return false; 
             
         }
             
-        return 0;
+        return true;
     }
     
     /**
      * Atualiza diretamente os grafos e o mapa com as novas posicoes do Pacman.
      * @return 0 Para normalidade. Diferente de 0 para algum evento.
      */
-    private int updadtePacManOnMap() {
+    private boolean updadtePacManOnMap() {
         
         // Limpar o conteudo que existe nesse lugar que o pacman esta.
         this.gn.setBlockValue(0);
@@ -182,17 +191,17 @@ public class PacMan extends Movement{
         this.gn = this.G.getGraphNode( this.map.getWidth() * this.pos[0] + this.pos[1] );
         
         // Verificar o que o PacMan comeu
-        int ateStatus = checkEatenValue(this.gn.getBlockValue());
+        boolean ateStatus = checkEatenValue(this.gn.getBlockValue());
         
-        if(ateStatus != 0)
-            return ateStatus;
+        if(!ateStatus)
+            return false;
         
         // Atualizar o mapa e o Grafo
         this.gn.setBlockValue(this.elementValue);
         this.G.updateHashMap(this.gn.getId(), this.gn);
         this.map.setValueAtMap(this.elementValue, this.gn.getPos());
         
-        return 0;
+        return true;
     }
     
     @Override

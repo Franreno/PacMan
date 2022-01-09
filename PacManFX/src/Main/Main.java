@@ -4,11 +4,11 @@ import Engine.Field;
 import Engine.Graph;
 import Engine.GraphNode;
 import Engine.Points;
-import SystemElements.Blinky;
-import SystemElements.Clyde;
-import SystemElements.Inky;
+
+import SystemElements.Ghosts;
 import SystemElements.PacMan;
-import SystemElements.Pinky;
+import SystemElements.PersuitGhost;
+
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,8 +45,50 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-
     }
+    
+    private void switchCaseEatenGhost(int ghostType, Points points, PersuitGhost _b, PersuitGhost _p, Ghosts _i, Ghosts _c) {
+        
+        if(ghostType >= 211) {
+            ghostType -= 200;
+        } else if(ghostType >= 111 && ghostType < 200) {
+            ghostType -= 100;
+        }
+        
+        switch (ghostType) {
+            case 11:
+                if(_b.isGhostAlive() && _b.getGhostStatus()) {
+                    System.out.println("Comi o blinky");
+                    _b.ghostWasEaten();
+                    points.ateGhost();
+                }
+                break;
+                
+            case 13:
+                if(_i.isGhostAlive() && _i.getGhostStatus()) {
+                    System.out.println("Comi o Inky");
+                    _i.ghostWasEaten();
+                    points.ateGhost();
+                }
+                break;
+            case 17:
+                if(_p.isGhostAlive() && _i.getGhostStatus()) {
+                    System.out.println("Comi o Pinky");
+                    _p.ghostWasEaten();
+                    points.ateGhost();
+                }
+                break;
+            case 19:
+                if(_c.isGhostAlive() && _i.getGhostStatus()) {
+                    System.out.println("Comi o Clyde");
+                    _c.ghostWasEaten();
+                    points.ateGhost();
+                }
+                break;
+        }
+    }
+    
+    
 
     private void redrawMap(Group root, Field field, int[][] fieldData ) {
         // y == rows
@@ -92,18 +134,17 @@ public class Main extends Application {
         // Criacao do sistema de pontos.
         Points systemPoints = new Points();
         
-        
         // Criacao do Pacman.
         PacMan _pacman = new PacMan(_graph, field, systemPoints);
 
         // Criacao do fantasma blinky.
-        Blinky _blinky = new Blinky(_graph, field, systemPoints);
+        PersuitGhost _blinky = new PersuitGhost(_graph, field, systemPoints, 11, 350);
         
-        Clyde _clyde = new Clyde(_graph, field, systemPoints);
+        PersuitGhost _pinky = new PersuitGhost(_graph, field, systemPoints, 17, 406);
         
-        Inky _inky = new Inky(_graph, field, systemPoints);
+        Ghosts _clyde = new Ghosts(_graph, field, systemPoints, 19, 405);
         
-        Pinky _pinky = new Pinky(_graph, field, systemPoints);
+        Ghosts _inky = new Ghosts(_graph, field, systemPoints, 13, 407);
         
         
         // Procura o pacman.
@@ -155,20 +196,38 @@ public class Main extends Application {
             @Override
             public void run() {
                 Platform.runLater( new Runnable() { 
+                    @Override
                     public void run() {
-                        _pacman.update();
-                        _blinky.update(_pacman.getNode());
-                        _clyde.update();
-                        _inky.update();
-                        _pinky.update(_pacman.getNode());
                         
+                        // Se o pacman pegou alguma coisa
+                        if( !_pacman.update() ) {
+                            if( systemPoints.getPowerState() ) {
+                                // Comeu algum fantasma
+                                switchCaseEatenGhost(_pacman.getGhostTypeEaten(), systemPoints, _blinky, _pinky, _inky, _clyde);
+//                                System.out.println("Comi um fantasma");
+                            } else {
+                                _pacman.died();
+                                System.out.println("Morri");
+                            }
+                        }
+                        
+                        
+                        if( !_blinky.update(_pacman.getNode()) || !_clyde.update() || !_inky.update() || !_pinky.update(_pacman.getNode()) ) {
+                            _pacman.died();
+                            System.out.println("Morri");
+                        }
+                        
+                        _blinky.checkPoints();
+                            
                         if(systemPoints.checkAmountEaten()) {
                             int fruitNodeID = systemPoints.getFruitNodeID();
                             GraphNode fruitNode = _graph.getGraphNode(fruitNodeID);
                             if( field.getValueFromMap(fruitNode.getPos()) == 3 ) {
-                                fruitNode = _graph.getGraphNode(fruitNodeID-1);
+                                fruitNodeID -= 1;
+                                fruitNode = _graph.getGraphNode(fruitNodeID);
                             }
                             
+                            fruitNode.setBlockValue(3);
                             fruitNode.setOriginalBlockValue(3);
                             _graph.updateHashMap(fruitNodeID, fruitNode);
                             
@@ -187,7 +246,7 @@ public class Main extends Application {
             
         };
         
-        long frameTime = (long) (1000.0 / 4.0);
+        long frameTime = (long) (1000.0 / 6.0);
         timer.schedule(timertask, 0, frameTime);
     }
 }

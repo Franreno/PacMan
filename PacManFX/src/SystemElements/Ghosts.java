@@ -29,6 +29,9 @@ public class Ghosts extends Movement{
      //o valor original daquele nodulo quando o fantasma sair dele.
     protected int previousGraphNodeBlockValue;
     
+    protected boolean alive;
+    protected boolean waitUntilPowerTimerWearsOff;
+    
     /**
      * ArrayList utilizado para o direcionamento dos fantasmas a alguma posicao.
      */
@@ -43,25 +46,40 @@ public class Ghosts extends Movement{
     /**
      * Poder do Pacman esta ativo.
      */
-    private static final int EATABLE_GHOST = 23; 
+    private static final int EATABLE_GHOST = 100; 
+    private boolean blueStatus;
     
     /**
      * O poder do Pacman esta resetando.
      */
-    private static final int RESETING_GHOST = 29;
-
+    private static final int RESETING_GHOST = 200;
+    private boolean resetingStatus;
+    
+    
+    
     /**
      * Construtor para a classe dos fantasmas.
      * @param G Grafo referente ao jogo.
      * @param m Mapa referente ao jogo.
      * @param p Sistema de pontos do jogo.
      */
-    public Ghosts(Graph G, Field m, Points p) {
+    public Ghosts(Graph G, Field m, Points p, int _elementValue, int _startingNodeId) {
         super(G,m,p);
+        
+        this.elementValue = _elementValue;
+        this.startingGraphNode = this.G.getGraphNode(_startingNodeId);
+        
         this.status = false;
         this.frameDelay = 3;
         this.framesPlayed = 0;
+        this.alive = true;
+        this.blueStatus = false;
+        this.resetingStatus = false;
+        this.waitUntilPowerTimerWearsOff = false;
         this.totalPath = new ArrayList<>();
+        
+        this.setFirstPosition();
+        this.basicSetup();
     }
     
     
@@ -83,6 +101,14 @@ public class Ghosts extends Movement{
         this.map.setValueAtMap(this.elementValue, this.gn.getPos());
     }
     
+    public void ghostWasEaten() {
+        this.alive = false;
+        this.elementValue = 31;
+        this.waitUntilPowerTimerWearsOff = true;
+    }
+    
+    public boolean isGhostAlive() { return this.alive; }
+    public boolean getGhostStatus() { return this.status; }
     
     /**
      * Verifica se o poder do Pacman esta ativo e muda as cores do fantasma de 
@@ -92,20 +118,35 @@ public class Ghosts extends Movement{
         
         int powerTimer = this.points.getPowerTimer();
         
-        if(powerTimer != 0 && powerTimer > 10) {
+        if(powerTimer != 0 && powerTimer > 25 && this.alive && this.elementValue != 31) {
             // Poder esta ativo.
-            this.elementValue = EATABLE_GHOST;
+            if(!this.blueStatus) {
+                this.elementValue = this.previousElementValue + EATABLE_GHOST;
+                this.blueStatus = true;
+            }
             this.status = true;
+                       
         }
-        else if(powerTimer != 0 && powerTimer <= 10) {
+        else if(powerTimer != 0 && powerTimer <= 25 && this.alive && this.elementValue != 31) {
             // Poder esta resetando.
-            this.elementValue = (this.elementValue == EATABLE_GHOST) ? RESETING_GHOST : EATABLE_GHOST;
+            if( !this.blueStatus ) {
+                this.elementValue = this.previousElementValue + EATABLE_GHOST;
+                this.blueStatus = true;
+                this.resetingStatus = false;
+            } else if (!this.resetingStatus) {
+                this.elementValue = this.previousElementValue + RESETING_GHOST;
+                this.resetingStatus = true;
+                this.blueStatus = false;
+            }
+            
             this.status = true;
         }
         else  {
             // Pacman nao esta com poder.
             this.elementValue = this.previousElementValue;
             this.status = false;
+            this.blueStatus = false;
+            this.resetingStatus = false;
         }
         
         // Atualiza a cor fantasma no mapa
@@ -168,10 +209,11 @@ public class Ghosts extends Movement{
         this.G.updateHashMap(this.gn.getId(), this.gn);
     }
     
-    public int update() {
+    public boolean update() {
+        
         if(this.framesPlayed < this.frameDelay) {
             this.framesPlayed++;
-            return 0;
+            return true;
         }
         
         // Limpar a posicao atual.
@@ -185,12 +227,24 @@ public class Ghosts extends Movement{
 
         // Verificar localizacao do pacman.
         // Olhar nos vizinhos do node atual
-        if( this.gn.checkForNeighborWithBlockValue(10) ) {
+        if( this.gn.checkForNeighborWithBlockValue(10) && this.alive && !this.status) {
             // Se for o vizinho quer dizer que o foi encostado no pacman.
-            return -1;
-        }else if(this.status) {
-            if(this.gn != this.G.getGraphNode(406))
-                pathFind( this.G.getGraphNode( 406 ) ); // Central node
+            return false;
+        }else if(this.status && this.alive) {
+            if(this.gn != this.startingGraphNode)
+                pathFind( this.startingGraphNode ); // Central node
+        }  else if( !this.alive ) {
+            this.frameDelay = 0;
+            // Se o fantasma estiver 'morto'
+            if(this.gn != this.startingGraphNode )
+                pathFind( this.startingGraphNode );
+            else {
+                this.frameDelay = 3;
+                this.alive = true;
+                this.status = false;
+                this.elementValue = this.previousElementValue;
+                this.waitUntilPowerTimerWearsOff = true;
+            }   
         } else {
             // Random movment!!!
             if(this.gn == this.randomGraphNode) {
@@ -203,13 +257,17 @@ public class Ghosts extends Movement{
         updatePositionOnMap();
        
         // Verifica o status do poder do pacman
-        hasPacManEatenPallet();
+        if(!this.waitUntilPowerTimerWearsOff)
+            hasPacManEatenPallet();
+        else if(!this.points.getPowerState()) {
+            this.waitUntilPowerTimerWearsOff = false;
+        }
         
         // Colocar blinky nessa nova posicao
         this.map.setValueAtMap(this.elementValue, this.gn.getPos());
         
         this.framesPlayed = 0;
         
-        return 0;
+        return true;
     }
 }

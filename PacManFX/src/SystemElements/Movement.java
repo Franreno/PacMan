@@ -57,6 +57,8 @@ public class Movement {
      */
     protected int elementValue;
     
+    protected GraphNode startingGraphNode;
+    
     /**
      * Construtor da classe.posOffset
      * @param _G Grafo referente ao jogo.
@@ -71,6 +73,7 @@ public class Movement {
         this.dpos = new int[2];
         this.gn = null;
         this.elementValue = -1;
+        this.startingGraphNode = null;
     }
     
     /**
@@ -83,14 +86,8 @@ public class Movement {
     /**
      * Gera a atribuicao aleatoria de um nodulo para este elemento.
      */
-    protected void setFirstPosition() {
-        boolean flag = false;
-        while(!flag) {
-            // Pega valores no grafo que sao compativeis com o jogo.
-            this.gn = G.getRandomGraphNode();
-            if(this.gn.getBlockValue() != 2 && this.gn.getBlockValue() != 10 && !this.gn.checkForNeighborWithBlockValue(10))
-                flag = true;
-        }
+    protected void setFirstPosition() {        
+        this.gn = this.startingGraphNode;
         
         int[] _randomPos = this.gn.getPos();
         this.pos[0] = _randomPos[0];

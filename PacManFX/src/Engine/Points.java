@@ -38,6 +38,8 @@ public class Points {
     
     private final int fruitNodeID = 658;
     
+    private boolean powerState;
+    
     
     /**
      * Construtor da classe dos pontos.
@@ -50,6 +52,8 @@ public class Points {
         this.ghostsEaten = 0;
         this.level = 1;
         this.powerTimer = 0;
+        this.powerState = false;
+        
     }
     
     /**
@@ -73,6 +77,8 @@ public class Points {
         return this.powerTimer;
     }
     
+    public boolean getPowerState() { return this.powerState; }
+    
     
     public int getLevel() { return this.level; }
     
@@ -83,6 +89,11 @@ public class Points {
      */
     public void decreasePowerTimer() {
         this.powerTimer--;
+        if(this.powerTimer <= 0) {
+            this.powerState = false;
+            this.ghostsEaten = 0;
+        }
+            
     }
     
     /**
@@ -90,13 +101,6 @@ public class Points {
      */
     public void increaseLevel() {
         this.level++;
-    }
-    
-    /**
-     * Zera a quantidade sequencial de fantasmas comidos.
-     */
-    public void resetGhostsEaten() {
-        this.ghostsEaten = 0;
     }
     
     /**
@@ -113,7 +117,8 @@ public class Points {
     private void ateSuperFood() {
         this.amountEaten++;
         this.points += 50;
-        this.powerTimer = 60;
+        this.powerTimer = 90;
+        this.powerState = true;
     }
     
     /**
