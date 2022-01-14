@@ -18,6 +18,9 @@ public class GraphNode{
      */
     private int blockValue;
     
+    /**
+     * Valor original do node.
+     */
     private int originalBlockValue;
     
     /**
@@ -85,7 +88,10 @@ public class GraphNode{
         return this.blockValue;
     }
     
-    
+    /**
+     *
+     * @return Valor original do node.
+     */
     public int getOriginalBlockValue() { return this.originalBlockValue; }
     
     /**
@@ -117,6 +123,10 @@ public class GraphNode{
         this.blockValue = value;
     }
     
+    /**
+     *
+     * @param value Valor para mudar o valor original desse node.
+     */
     public void setOriginalBlockValue(int value) {
         this.originalBlockValue = value;
     }

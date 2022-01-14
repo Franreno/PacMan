@@ -25,11 +25,17 @@ public class Ghosts extends Movement{
     /**
      * Guarda o valor original do nodulo onde o fantasma esta.
      */
-     // O fantasma nao muda o conteudo do mapa, entao deve-se retornar ao mapa
-     //o valor original daquele nodulo quando o fantasma sair dele.
     protected int previousGraphNodeBlockValue;
     
+    /**
+     * Verifica se o fantasma pode ser comido ou nao.
+     */
     protected boolean alive;
+    
+    /**
+     * Verifica o tempo do poder do pacman pra deixar os fantasmas que ja foram comidos 
+     * voltarem ao normal de novo.
+     */
     protected boolean waitUntilPowerTimerWearsOff;
     
     /**
@@ -37,6 +43,9 @@ public class Ghosts extends Movement{
      */
     protected ArrayList<Integer> totalPath;
     
+    /**
+     * Utilizado na movimentacao aleatoria dos fantasmas Inky e Clyde.
+     */
     private GraphNode randomGraphNode;
     
     
@@ -62,6 +71,8 @@ public class Ghosts extends Movement{
      * @param G Grafo referente ao jogo.
      * @param m Mapa referente ao jogo.
      * @param p Sistema de pontos do jogo.
+     * @param _elementValue Valor int do tipo do fantasma
+     * @param _startingNodeId Posicao inicial do fantasma
      */
     public Ghosts(Graph G, Field m, Points p, int _elementValue, int _startingNodeId) {
         super(G,m,p);
@@ -82,7 +93,9 @@ public class Ghosts extends Movement{
         this.basicSetup();
     }
     
-    
+    /**
+     * Seta as variaveis basicas dos fantasmas, como mudanca no grafo e no mapa.
+     */
     protected void basicSetup() {
 
         this.randomGraphNode = this.G.getRandomGraphNode();
@@ -101,13 +114,24 @@ public class Ghosts extends Movement{
         this.map.setValueAtMap(this.elementValue, this.gn.getPos());
     }
     
+    /**
+     * Pacman comeu o fantasma.
+     */
     public void ghostWasEaten() {
         this.alive = false;
         this.elementValue = 31;
         this.waitUntilPowerTimerWearsOff = true;
     }
     
+    /**
+     * @return Se o fantasma foi comido.
+     */
     public boolean isGhostAlive() { return this.alive; }
+    
+    /**
+     *
+     * @return Se o fantasma pode ser comido ou nao.
+     */
     public boolean getGhostStatus() { return this.status; }
     
     /**
@@ -191,11 +215,16 @@ public class Ghosts extends Movement{
         Collections.reverse(totalPath); // goal -> start. vai para start -> goal
     }
     
+    /**
+     * Atualiza a posicao do fantasma no mapa.
+     */
     protected void updatePositionOnMap() {
         
+        // Verifica se a lista total de caminhos ta vazia
         if(this.totalPath.isEmpty())
             return;
 
+        // Pega o primeiro valor dessa litsta
         int nodeValue = this.totalPath.get(1);
         
         GraphNode newNode = this.G.getGraphNode(nodeValue);
@@ -209,8 +238,13 @@ public class Ghosts extends Movement{
         this.G.updateHashMap(this.gn.getId(), this.gn);
     }
     
+    /**
+     * Atualiza a posicao de um fantasma no jogo.
+     * @return True se tudo ocorreu certo, False caso o fantasma encostou no pacman.
+     */
     public boolean update() {
         
+        // Verifica quantos frames ja se passaram (Sensacao de velocidade dos fantasmas).
         if(this.framesPlayed < this.frameDelay) {
             this.framesPlayed++;
             return true;
@@ -231,11 +265,13 @@ public class Ghosts extends Movement{
             // Se for o vizinho quer dizer que o foi encostado no pacman.
             return false;
         }else if(this.status && this.alive) {
+            // Poder esta ativo, volta para a posicao de origem
             if(this.gn != this.startingGraphNode)
-                pathFind( this.startingGraphNode ); // Central node
+                pathFind( this.startingGraphNode ); 
         }  else if( !this.alive ) {
-            this.frameDelay = 0;
             // Se o fantasma estiver 'morto'
+            
+            this.frameDelay = 0; // Velocidade maxima
             if(this.gn != this.startingGraphNode )
                 pathFind( this.startingGraphNode );
             else {
@@ -263,9 +299,10 @@ public class Ghosts extends Movement{
             this.waitUntilPowerTimerWearsOff = false;
         }
         
-        // Colocar blinky nessa nova posicao
+        // Colocar fantasma na nova posicao
         this.map.setValueAtMap(this.elementValue, this.gn.getPos());
         
+        // Reseta os frames que ja passaram
         this.framesPlayed = 0;
         
         return true;

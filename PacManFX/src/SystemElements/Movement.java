@@ -57,6 +57,9 @@ public class Movement {
      */
     protected int elementValue;
     
+    /**
+     * Posicao inicial do elemento.
+     */
     protected GraphNode startingGraphNode;
     
     /**
@@ -110,4 +113,32 @@ public class Movement {
     protected void updateOnMap() {
         this.map.setValueAtMap(elementValue, gn.getPos());
     }
+    
+    /**
+     *  Retorna o elemento a sua posicao inicial.
+     */
+    public void resetEntity() {
+        // Resetar pro bloco original
+        // Colocar no mapa o startingPosition
+        this.gn.setBlockValue( this.gn.getOriginalBlockValue() );
+        this.G.updateHashMap(this.gn.getId(), this.gn);
+        this.map.setValueAtMap(this.gn.getOriginalBlockValue(), this.gn.getPos());
+        
+        
+        this.gn = this.startingGraphNode;
+        int[] _pos = this.gn.getPos();
+        
+        this.pos[0] = _pos[0];
+        this.pos[1] = _pos[1];
+        
+        // Atualiza o valor do nodulo no Grafo
+        this.gn.setBlockValue( this.elementValue );
+        this.G.updateHashMap(this.gn.getId(), this.gn);
+        
+        // Atualiza o valor do fantasma no mapa.
+        this.map.setValueAtMap(this.elementValue, this.gn.getPos());
+        
+    }
+    
+    
 }

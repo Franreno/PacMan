@@ -3,13 +3,18 @@ package SystemElements;
 import Engine.Points;
 import Engine.Field;
 import Engine.Graph;
-import Engine.GraphNode;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * Classe que representa os atributos e metodos para o Pacman.
  * @author Francisco Reis Nogueira - 11954374
  */
 public class PacMan extends Movement{
+    
+    // Imagens para a realizar a rotacao da imagem dependendo do sentido do pacman.
+    private final Image PacManImage = new Image("assets/Pacman.gif", 16, 16, false, false);
+    private ImageView PacImView = new ImageView(PacManImage);
     
     /**
      * Quantidade de vidas do Pacman.
@@ -22,7 +27,7 @@ public class PacMan extends Movement{
     private boolean alive;
     
     /**
-     * 
+     * Qual fantasma que foi comido.
      */
     private int ghostTypeEaten;
         
@@ -38,6 +43,7 @@ public class PacMan extends Movement{
         this.alive = true;
         this.elementValue = 10;
         this.ghostTypeEaten = -1;
+        this.startingGraphNode = this.G.getGraphNode(656);
         setVelocity(0,0);
         setFirstPosition();
     }
@@ -49,23 +55,28 @@ public class PacMan extends Movement{
         return this.lifes;
     }
     
+    /**
+     * @return O tipo do fantasma que foi comido.
+     */
     public int getGhostTypeEaten() { return this.ghostTypeEaten; }
+    
+    /**
+     *
+     * @return O ImageView ja rotacionado para a direcao do pacman.
+     */
+    public ImageView getPacImView() { return this.PacImView; }
         
     /**
      * Seleciona uma posicao aleatoria, pelo grafo, para colocar o PacMan no mapa.
      */
     @Override
     protected void setFirstPosition() {
-        boolean flag = false;
-        while(!flag) {
-            this.gn = this.G.getRandomGraphNode();
-            if(this.gn.getBlockValue() != 2)
-                flag = true;
-        }
-        int[] _randomPos = this.gn.getPos();
+        this.gn = this.startingGraphNode;
+        int[] position = this.gn.getPos();
+        this.pos[0] = position[0];
+        this.pos[1] = position[1];
         
-        this.pos[0] = _randomPos[0];
-        this.pos[1] = _randomPos[1];
+        
         updadtePacManOnMap();
     }
         
@@ -75,6 +86,7 @@ public class PacMan extends Movement{
     public void died() {
         this.alive = false;
         this.lifes--;
+        this.resetEntity();
     }
     
     /**
@@ -82,13 +94,16 @@ public class PacMan extends Movement{
      * @param ch Tipo de movimentacao que o Pacman seguira.
      */
     public void updateVelocity(char ch) {
+        this.PacImView.setRotate(0);
         switch(ch) {
             case 'w': 
                 setVelocity(-1, 0);
+                this.PacImView.setRotate(-90);
                 break;
             
             case 's':
                 setVelocity(1, 0);
+                this.PacImView.setRotate(90);
                 break;
             
             case 'd': 
@@ -97,6 +112,7 @@ public class PacMan extends Movement{
             
             case 'a': 
                 setVelocity(0, -1);
+                this.PacImView.setRotate(-90 * 2);
                 break;
         }
     }

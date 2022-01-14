@@ -32,12 +32,25 @@ public class Points {
      */
     private int powerTimer;
     
+    /**
+     * Verificacao da quantidade comida para criar uma nova fruta no jogo.
+     */
     private int amountEatenThreshold;
     
+    
+    /**
+     * Quantas vezes a fruta apareceu nesse nivel.
+     */
     private int fruitApperedXTimes;
     
+    /**
+     * Posicao que as frutas vao aparecer
+     */
     private final int fruitNodeID = 658;
     
+    /**
+     * Poder do pacman esta ativo?
+     */
     private boolean powerState;
     
     
@@ -77,11 +90,22 @@ public class Points {
         return this.powerTimer;
     }
     
+    /**
+     *
+     * @return Se o poder do pacman esta ativo.
+     */
     public boolean getPowerState() { return this.powerState; }
     
-    
+    /**
+     *
+     * @return O nivel do jogo.
+     */
     public int getLevel() { return this.level; }
-    
+
+    /**
+     *
+     * @return A posicao original da fruta.
+     */
     public int getFruitNodeID() { return this.fruitNodeID; }
     
     /**
@@ -101,6 +125,9 @@ public class Points {
      */
     public void increaseLevel() {
         this.level++;
+        this.amountEaten = 0;
+        this.amountEatenThreshold = 70;
+        this.fruitApperedXTimes = 0;
     }
     
     /**
@@ -115,7 +142,6 @@ public class Points {
      * Comeu uma Pilula de poder.
      */
     private void ateSuperFood() {
-        this.amountEaten++;
         this.points += 50;
         this.powerTimer = 90;
         this.powerState = true;
@@ -155,7 +181,10 @@ public class Points {
         }
     }
     
-    
+    /**
+     * Verifica a quantidade de PacDots comidos para a criacao de uma nova fruta.
+     * @return Se uma nova fruta pode ser criada.
+     */
     public boolean checkAmountEaten() {
         if( this.fruitApperedXTimes < 2 && this.amountEaten >= this.amountEatenThreshold ) {
             this.amountEatenThreshold += 30;

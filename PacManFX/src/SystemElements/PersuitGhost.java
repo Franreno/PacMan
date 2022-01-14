@@ -6,13 +6,20 @@ import Engine.Field;
 import Engine.Points;
 
 /**
- * Classe que contem o funcionamento para o fantasma blinky 
- * (Perseguidor ativo do Pacman).
+ * Classe que contem o funcionamento para os fantasmas 
+ * Perseguidores do Pacman
  * @author Francisco Reis Nogueira - 11954374
  */
 public class PersuitGhost extends Ghosts{
     
+    /**
+     * Controla o aumento da velocidade do fantasma blinky.
+     */
     private int pointsThreshHold;
+    
+    /**
+     * Salva o ultimo valor da velocidade do fantasma.
+     */
     private int lastFrameDelay;
     
     /**
@@ -20,6 +27,8 @@ public class PersuitGhost extends Ghosts{
      * @param G Grafo referente ao jogo.
      * @param m Mapa referente ao jogo.
      * @param p Sistema de pontos do jogo.
+     * @param _elementValue Valor int do tipo do fantasma
+     * @param _startingNodeId Posicao inicial do fantasma
      */
     public PersuitGhost(Graph G, Field m, Points p, int _elementValue, int _startingNodeId) {
         super(G,m,p, _elementValue, _startingNodeId);
@@ -28,6 +37,9 @@ public class PersuitGhost extends Ghosts{
         this.lastFrameDelay = this.frameDelay;
     }
     
+    /**
+     * Verifica a quantidade de pontos que o pacman comeu e atualiza a velocidade do fantasma.
+     */
     public void checkPoints() {
         if(this.points.getAmountEaten() > this.pointsThreshHold && this.frameDelay != 0) {
             this.frameDelay--;
@@ -40,9 +52,11 @@ public class PersuitGhost extends Ghosts{
     /**
      * Metodo que atualiza a posicao de blinky no mapa.
      * @param goal Posicao do pacman que eh utilizada para verificar se o Pacman encostou em blinky.
-     * @return 0 Para normalidade. Diferente de 0 para algum evento.
+     * @return True Para normalidade. False para ter pego o pacman.
      */
     public boolean update(GraphNode goal) {
+        
+        // Verifica quantos frames ja se passaram (Sensacao de velocidade dos fantasmas).
         if(this.framesPlayed < this.frameDelay) {
             this.framesPlayed++;
             return true;
@@ -62,16 +76,17 @@ public class PersuitGhost extends Ghosts{
         if( this.gn.checkForNeighbor(goal.getId()) && this.alive && !this.status) {
             // Se for o vizinho quer dizer que o foi encostado no pacman.
             return false;
-        }else if(this.status) {
+        }else if(this.status && this.alive) {
+            // Poder esta ativo, volta para a posicao de origem
             if(this.gn != this.startingGraphNode)
-                pathFind( this.startingGraphNode ); // Central node
+                pathFind( this.startingGraphNode );
         } else if(!this.alive) {
-            this.frameDelay = 0;
             // Se o fantasma estiver 'morto'
+            this.frameDelay = 0;
             if(this.gn != this.startingGraphNode )
                 pathFind( this.startingGraphNode );
             else {
-                this.frameDelay = 3;
+                this.frameDelay = lastFrameDelay;
                 this.alive = true;
                 this.status = false;
                 this.elementValue = this.previousElementValue;
@@ -80,6 +95,7 @@ public class PersuitGhost extends Ghosts{
         } 
         
         else {
+            // Procura o pacman e segue ele.
             pathFind(goal);
         }
         
@@ -96,6 +112,7 @@ public class PersuitGhost extends Ghosts{
         // Colocar blinky nessa nova posicao
         this.map.setValueAtMap(this.elementValue, this.gn.getPos());
         
+        // Reseta os frames que ja passaram
         this.framesPlayed = 0;
         
         return true;

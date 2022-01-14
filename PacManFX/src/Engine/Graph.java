@@ -205,6 +205,9 @@ public class Graph {
         }
     }
     
+    /**
+     * Limpa todos os nodes do grafo.
+     */
     public void killAllNodesParentData() {
         for(GraphNode helper : this.hashList.values()) {
             helper.f = 10000;
